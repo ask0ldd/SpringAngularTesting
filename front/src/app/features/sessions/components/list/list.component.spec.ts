@@ -66,13 +66,12 @@ describe('ListComponent', () => {
     }
   }
 
-  // mock returning an observable with an empty array at the first call
-  // then an array of two sessions the second time
   const mockSessionAPIService = {
     all : jest.fn()
   }
 
-  describe('', () => {
+  // Unit Test
+  describe('when the component is initialized', () => {
 
     beforeAll(async () => {
       await TestBed.configureTestingModule({
@@ -88,14 +87,16 @@ describe('ListComponent', () => {
       datePipe = new DatePipe(`en-US`);
     });
 
-    it('should create', () => {
+    it('should be created', () => {
       expect(component).toBeTruthy();
     });
   })
 
+  // Unit Test
   describe('when an empty array is broadcasted by the .all() method of the sessionAPIService', () => {
     
     beforeAll(async () => {
+      // mockSessionAPIService.all creates an observable that will broadcast an empty array
       mockSessionAPIService.all = jest.fn(() => of([]))
       await TestBed.configureTestingModule({
         declarations: [ListComponent],
@@ -117,8 +118,10 @@ describe('ListComponent', () => {
     })
   })
 
+  // Unit Test
   describe('when an array of two sessions is broadcasted by the .all() method of the sessionAPIService', () => {
     beforeAll(async () => {
+      // mockSessionAPIService.all creates an observable that will broadcast an array of two sessions
       mockSessionAPIService.all = jest.fn(() => of([{...session1}, {...session2}]))
       await TestBed.configureTestingModule({
         declarations: [ListComponent],
@@ -141,10 +144,20 @@ describe('ListComponent', () => {
       const item2 = fixture.debugElement.queryAll(By.css('.item'))[1]
       expect(item1.queryAll(By.css('mat-card-title'))[0].nativeElement.textContent).toEqual(session1.name)
       expect(item2.queryAll(By.css('mat-card-title'))[0].nativeElement.textContent).toEqual(session2.name)
+      expect(item1.queryAll(By.css('.picture')).length).toBe(1);
+      expect(item2.queryAll(By.css('.picture')).length).toBe(1);
+      expect(item1.queryAll(By.css('.picture'))[0].nativeElement.src).toContain('assets/sessions.png')
+      expect(item2.queryAll(By.css('.picture'))[0].nativeElement.src).toContain('assets/sessions.png')
       expect((item1.queryAll(By.css('mat-card-content p'))[0].nativeElement.textContent as string).trim()).toEqual(session1.description)
       expect((item2.queryAll(By.css('mat-card-content p'))[0].nativeElement.textContent as string).trim()).toEqual(session2.description)
       expect((item1.queryAll(By.css('mat-card-subtitle'))[0].nativeElement.textContent as string).trim()).toEqual('Session on ' + datePipe.transform(session1.date, 'longDate'))
       expect((item2.queryAll(By.css('mat-card-subtitle'))[0].nativeElement.textContent as string).trim()).toEqual('Session on ' + datePipe.transform(session2.date, 'longDate')) // using pipe
+      expect((item1.queryAll(By.css('button span'))[0].nativeElement.textContent as string).trim()).toEqual('Detail')
+      expect((item1.queryAll(By.css('button span'))[1].nativeElement.textContent as string).trim()).toEqual('Edit')
+      expect((item2.queryAll(By.css('button span'))[0].nativeElement.textContent as string).trim()).toEqual('Detail')
+      expect((item2.queryAll(By.css('button span'))[1].nativeElement.textContent as string).trim()).toEqual('Edit')
     })
   })
+
+  
 });
