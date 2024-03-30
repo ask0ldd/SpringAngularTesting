@@ -66,39 +66,85 @@ describe('ListComponent', () => {
     }
   }
 
+  // mock returning an observable with an empty array at the first call
+  // then an array of two sessions the second time
   const mockSessionAPIService = {
-    all : jest.fn(() => of([{...session1}, {...session2}]))
+    all : jest.fn()
   }
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [ListComponent],
-      imports: [HttpClientModule, MatCardModule, MatIconModule],
-      providers: [{ provide: SessionService, useValue: mockSessionService }, { provide: SessionApiService, useValue: mockSessionAPIService }]
+  describe('', () => {
+
+    beforeAll(async () => {
+      await TestBed.configureTestingModule({
+        declarations: [ListComponent],
+        imports: [HttpClientModule, MatCardModule, MatIconModule],
+        providers: [{ provide: SessionService, useValue: mockSessionService }, { provide: SessionApiService, useValue: mockSessionAPIService }]
+      })
+        .compileComponents();
+
+      fixture = TestBed.createComponent(ListComponent);
+      component = fixture.componentInstance;
+      fixture.detectChanges();
+      datePipe = new DatePipe(`en-US`);
+    });
+
+    it('should create', () => {
+      expect(component).toBeTruthy();
+    });
+  })
+
+  describe('when an empty array is broadcasted by the .all() method of the sessionAPIService', () => {
+    
+    beforeAll(async () => {
+      mockSessionAPIService.all = jest.fn(() => of([]))
+      await TestBed.configureTestingModule({
+        declarations: [ListComponent],
+        imports: [HttpClientModule, MatCardModule, MatIconModule],
+        providers: [{ provide: SessionService, useValue: mockSessionService }, { provide: SessionApiService, useValue: mockSessionAPIService }]
+      })
+        .compileComponents();
+
+      fixture = TestBed.createComponent(ListComponent);
+      component = fixture.componentInstance;
+      fixture.detectChanges();
+      datePipe = new DatePipe(`en-US`);
+    });
+
+    it('should display no sessions cards', async () => {
+      expect(component).toBeTruthy()
+      expect(mockSessionAPIService.all).toHaveBeenCalled()
+      expect(fixture.debugElement.queryAll(By.css('.item')).length).toBe(0)
     })
-      .compileComponents();
+  })
 
-    fixture = TestBed.createComponent(ListComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-    datePipe = new DatePipe(`en-US`);
-  });
+  describe('when an array of two sessions is broadcasted by the .all() method of the sessionAPIService', () => {
+    beforeAll(async () => {
+      mockSessionAPIService.all = jest.fn(() => of([{...session1}, {...session2}]))
+      await TestBed.configureTestingModule({
+        declarations: [ListComponent],
+        imports: [HttpClientModule, MatCardModule, MatIconModule],
+        providers: [{ provide: SessionService, useValue: mockSessionService }, { provide: SessionApiService, useValue: mockSessionAPIService }]
+      })
+        .compileComponents();
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+      fixture = TestBed.createComponent(ListComponent);
+      component = fixture.componentInstance;
+      fixture.detectChanges();
+      datePipe = new DatePipe(`en-US`);
+    });
 
-  it('should display all sessions', () => {
-    expect(component).toBeTruthy()
-    expect(mockSessionAPIService.all).toHaveBeenCalled()
-    expect(fixture.debugElement.queryAll(By.css('.item')).length).toEqual(2)
-    const item1 = fixture.debugElement.queryAll(By.css('.item'))[0] // !!!! improve with find
-    const item2 = fixture.debugElement.queryAll(By.css('.item'))[1]
-    expect(item1.queryAll(By.css('mat-card-title'))[0].nativeElement.textContent).toEqual(session1.name)
-    expect(item2.queryAll(By.css('mat-card-title'))[0].nativeElement.textContent).toEqual(session2.name)
-    expect((item1.queryAll(By.css('mat-card-content p'))[0].nativeElement.textContent as string).trim()).toEqual(session1.description)
-    expect((item2.queryAll(By.css('mat-card-content p'))[0].nativeElement.textContent as string).trim()).toEqual(session2.description)
-    expect((item1.queryAll(By.css('mat-card-subtitle'))[0].nativeElement.textContent as string).trim()).toEqual('Session on ' + datePipe.transform(session1.date, 'longDate'))
-    expect((item2.queryAll(By.css('mat-card-subtitle'))[0].nativeElement.textContent as string).trim()).toEqual('Session on ' + datePipe.transform(session2.date, 'longDate')) // using pipe
+    it('should display two sessions cards', async () => {
+      expect(component).toBeTruthy()
+      expect(mockSessionAPIService.all).toHaveBeenCalled()
+      expect(fixture.debugElement.queryAll(By.css('.item')).length).toEqual(2)
+      const item1 = fixture.debugElement.queryAll(By.css('.item'))[0] // !!!! improve with find
+      const item2 = fixture.debugElement.queryAll(By.css('.item'))[1]
+      expect(item1.queryAll(By.css('mat-card-title'))[0].nativeElement.textContent).toEqual(session1.name)
+      expect(item2.queryAll(By.css('mat-card-title'))[0].nativeElement.textContent).toEqual(session2.name)
+      expect((item1.queryAll(By.css('mat-card-content p'))[0].nativeElement.textContent as string).trim()).toEqual(session1.description)
+      expect((item2.queryAll(By.css('mat-card-content p'))[0].nativeElement.textContent as string).trim()).toEqual(session2.description)
+      expect((item1.queryAll(By.css('mat-card-subtitle'))[0].nativeElement.textContent as string).trim()).toEqual('Session on ' + datePipe.transform(session1.date, 'longDate'))
+      expect((item2.queryAll(By.css('mat-card-subtitle'))[0].nativeElement.textContent as string).trim()).toEqual('Session on ' + datePipe.transform(session2.date, 'longDate')) // using pipe
+    })
   })
 });
