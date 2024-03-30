@@ -19,6 +19,7 @@ import { SessionApiService } from '../../services/session-api.service';
 import { TeacherService } from 'src/app/services/teacher.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DebugElement } from '@angular/core';
+import { DatePipe, TitleCasePipe, UpperCasePipe } from '@angular/common';
 
 const mockSession : Session = {
   id : 1,
@@ -38,6 +39,10 @@ const teacher = {
   createdAt: new Date(),
   updatedAt: new Date(),
 }
+
+const titleCasePipe = new TitleCasePipe();
+const datePipe = new DatePipe(`en-US`);
+const upperCasePipe = new UpperCasePipe();
 
 // !!! admin false : participate // unparticipate
 // !!! admin true : delete
@@ -118,12 +123,25 @@ describe('DetailComponent', () => {
       
       fixture.detectChanges();
 
-      // reset the number of calls associated to all mock fn
+      // reset the number of calls associated to all mocks
       jest.clearAllMocks()
     });
 
     it('should create the component', () => {
       expect(component).toBeTruthy();
+    })
+
+    it('should display all the sessions datas', () => {
+      expect(fixture.debugElement.query(By.css('h1')).nativeElement.textContent).toEqual(titleCasePipe.transform(mockSession.name))
+      expect(fixture.debugElement.queryAll(By.css('.picture'))[0].nativeElement.src).toContain('assets/sessions.png')
+      expect(fixture.debugElement.query(By.css('.description')).nativeElement.textContent).toContain(mockSession.description)
+      expect(fixture.debugElement.query(By.css('.created')).nativeElement.textContent).toContain(datePipe.transform(mockSession.createdAt,'longDate'))
+      expect(fixture.debugElement.query(By.css('.updated')).nativeElement.textContent).toContain(datePipe.transform(mockSession.updatedAt,'longDate'))
+      const attendeesnDateContainer = fixture.debugElement.query(By.css('mat-card-content'))
+      const spans = attendeesnDateContainer.queryAll(By.css('span'))
+      expect(spans[0].nativeElement.textContent).toContain(mockSession.users.length + ' attendees')
+      expect(spans[1].nativeElement.textContent).toContain(datePipe.transform(mockSession.date,'longDate'))
+      expect(fixture.debugElement.query(By.css('mat-card-subtitle')).nativeElement.textContent).toContain(component.teacher?.firstName + ' ' + upperCasePipe.transform(component.teacher?.lastName))
     })
 
     // Unit Test
@@ -142,6 +160,8 @@ describe('DetailComponent', () => {
         expect(buttons.length).toBe(2)
         const cardButtons = fixture.debugElement.queryAll(By.css('mat-card-title button'))
         const participateButton = cardButtons[1]
+        expect(mockSessionAPIService.detail).not.toHaveBeenCalled()
+        expect(mockSessionAPIService.participate).not.toHaveBeenCalled()
         participateButton.triggerEventHandler('click', null)
         expect(mockSessionAPIService.participate).toHaveBeenCalled()
         expect(mockSession.users.includes(userId)).toBeTruthy()
@@ -157,6 +177,8 @@ describe('DetailComponent', () => {
         expect(buttons.length).toBe(2)
         const cardButtons = fixture.debugElement.queryAll(By.css('mat-card-title button'))
         const unparticipateButton = cardButtons[1]
+        expect(mockSessionAPIService.detail).not.toHaveBeenCalled()
+        expect(mockSessionAPIService.unParticipate).not.toHaveBeenCalled()
         unparticipateButton.triggerEventHandler('click', null)
         expect(mockSessionAPIService.unParticipate).toHaveBeenCalled()
         expect(mockSession.users.includes(userId)).toBeFalsy()
@@ -181,11 +203,12 @@ describe('DetailComponent', () => {
     const mockSessionAPIService = {
       detail : jest.fn(() => of(mockSession)),
       participate : jest.fn(() => {
-        // adds the current user to the session participants
+        // adds the current user to the mockSession participants
         if(!mockSession.users.includes(userId)) mockSession.users.push(userId)
         return of(mockSession)
       }),
       unParticipate : jest.fn(() => {
+        // adds the current user out of the mockSession participants
         if(mockSession.users.includes(userId)) mockSession.users.pop()
         return of(mockSession)
       }), 
