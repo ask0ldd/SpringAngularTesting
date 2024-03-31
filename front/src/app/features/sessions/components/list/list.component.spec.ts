@@ -136,5 +136,7 @@ describe('ListComponent', () => {
     })
   })
 
-  
+  // Unit Test : Clicking the detail button should trigger action
+
+  // Unit Test : Clicking the edit button should trigger action
 });

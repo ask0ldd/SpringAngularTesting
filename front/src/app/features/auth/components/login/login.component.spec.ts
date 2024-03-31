@@ -97,4 +97,15 @@ describe('LoginComponent', () => {
     expect((submitButton as HTMLButtonElement).disabled).toBeTruthy()
   })
 
+  describe('if the form contains a valid password but with an invalid email',() => {
+    it('should still display an inactive submit button', () => {
+      const compiled = fixture.nativeElement as HTMLElement;
+      const inputs = fixture.debugElement.queryAll(By.css('form input'))
+      inputs[0].triggerEventHandler('input', { target: { value: 'invalidEmail'}})
+      inputs[1].triggerEventHandler('input', { target: { value: 'validPassword'}})
+      const submitButton = compiled.querySelector('button[type="submit"]')
+      expect((submitButton as HTMLButtonElement).disabled).toBeTruthy()
+    })
+  })
+
 });
