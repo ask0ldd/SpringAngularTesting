@@ -11,6 +11,7 @@ import { SessionApiService } from '../../services/session-api.service';
 import { of } from 'rxjs';
 import { By } from '@angular/platform-browser';
 import { DatePipe } from '@angular/common';
+import { NO_ERRORS_SCHEMA } from '@angular/compiler';
 
 const session1 : Session = {
   id : 1,
@@ -57,7 +58,7 @@ describe('ListComponent', () => {
       await TestBed.configureTestingModule({
         declarations: [ListComponent],
         imports: [HttpClientModule, MatCardModule, MatIconModule],
-        providers: [{ provide: SessionService, useValue: mockSessionService }, { provide: SessionApiService, useValue: mockSessionAPIService }]
+        providers: [{ provide: SessionService, useValue: mockSessionService }, { provide: SessionApiService, useValue: mockSessionAPIService }],
       })
         .compileComponents();
 
@@ -71,7 +72,7 @@ describe('ListComponent', () => {
     });
   })
 
-  // Unit Test
+  // Integration Test
   describe('when an empty array is broadcasted by the .all() method of the sessionAPIService', () => {
     
     beforeAll(async () => {
@@ -96,7 +97,7 @@ describe('ListComponent', () => {
     })
   })
 
-  // Unit Test
+  // Integration Test
   describe('when an array of two sessions is broadcasted by the .all() method of the sessionAPIService', () => {
     beforeAll(async () => {
       // mockSessionAPIService.all creates an observable that will broadcast an array of two sessions
@@ -139,4 +140,25 @@ describe('ListComponent', () => {
   // Unit Test : Clicking the detail button should trigger action
 
   // Unit Test : Clicking the edit button should trigger action
+
+  // Unit Test
+  describe('the component user getter', () => {
+    it('should return the sessionInformations', () => {
+      expect(JSON.stringify(component.user)).toBe(JSON.stringify({ admin: true }))
+    })
+  })
+
+  // Unit Test
+  describe('once the component initialized', () => {
+    beforeAll(() => {
+      mockSessionAPIService.all = jest.fn(() => of([{...session1}, {...session2}]))
+    })
+    it('should broadcast the expected sessions through its sessions$ attribute', () => {
+      component.sessions$.subscribe(sessions => {
+        expect(JSON.stringify(sessions[0])).toBe(JSON.stringify(session1))
+        expect(JSON.stringify(sessions[1])).toBe(JSON.stringify(session2))
+      })
+    })
+  })
+
 });
