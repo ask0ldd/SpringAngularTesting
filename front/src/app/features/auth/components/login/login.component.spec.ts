@@ -121,4 +121,20 @@ describe('LoginComponent', () => {
     })
   })
 
+  describe('if the wrong credentials are entered',() => {
+    it('should display an error message', () => {
+      const inputs = fixture.debugElement.queryAll(By.css('form input'))
+      inputs[0].triggerEventHandler('input', { target: { value: 'validEmail@validEmail.com'}})
+      inputs[1].triggerEventHandler('input', { target: { value: 'validPassword'}})
+      const submitFn = jest.spyOn(component, 'submit')
+      fixture.detectChanges()
+      const form = fixture.debugElement.query(By.css('.login-form'))
+      form.triggerEventHandler('submit', null)
+      expect(submitFn).toHaveBeenCalled()
+      expect(authServiceMock.login).toHaveBeenCalled()
+      fixture.detectChanges()
+      expect(fixture.debugElement.queryAll(By.css('.error'))).toBeTruthy()
+    })
+  })
+
 });
