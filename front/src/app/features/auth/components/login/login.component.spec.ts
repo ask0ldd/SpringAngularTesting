@@ -12,10 +12,11 @@ import { SessionService } from 'src/app/services/session.service';
 
 import { LoginComponent } from './login.component';
 import { SessionInformation } from 'src/app/interfaces/sessionInformation.interface';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
 import { By } from '@angular/platform-browser';
+import { LoginRequest } from '../../interfaces/loginRequest.interface';
 
 // Init mocks
 const sessionInformation : SessionInformation = {
@@ -37,8 +38,14 @@ const sessionInformation : SessionInformation = {
   admin: true,
 }
 
+// if credentials are email@email.com / validpassword : broadcast sessionInformation
+// if anything else : throwError
 const authServiceMock = {
-  login: jest.fn(() => of(sessionInformation)),
+  login: jest.fn((loginRequest : LoginRequest) => {
+    if(loginRequest.email == 'email@email.com' && loginRequest.password == 'validPassword') return of(sessionInformation)
+    const err = new Error('test'); 
+    return throwError(() => err);
+  }),
 }
 
 const sessionServiceMock = {
@@ -86,6 +93,7 @@ describe('LoginComponent', () => {
   it('should render the login title, the fields and the an inactive submit button', () => {
     expect(fixture.debugElement.query(By.css('mat-card-title')).nativeElement.textContent).toBe("Login")
     /*
+      compiled ?
       When you use fixture.debugElement.queryAll(By.css('form input')) in your Jest test, you're selecting the raw HTML input elements, 
       not the Angular Material components. This means that the placeholder attribute, which is set on the Material component, 
       is not being reflected in the selected input elements.
@@ -95,6 +103,7 @@ describe('LoginComponent', () => {
     expect(compiled.querySelector('input[data-placeholder="Password"]')).toBeTruthy()
     const submitButton = compiled.querySelector('button[type="submit"]')
     expect(submitButton).toBeTruthy()
+    // the submit button should be disabled by default
     expect((submitButton as HTMLButtonElement).disabled).toBeTruthy()
   })
 
@@ -106,18 +115,20 @@ describe('LoginComponent', () => {
       inputs[1].triggerEventHandler('input', { target: { value: 'validPassword'}})
       fixture.detectChanges()
       const submitButton = compiled.querySelector('button[type="submit"]')
+      // the submit button should be disabled if only one field is valid
       expect((submitButton as HTMLButtonElement).disabled).toBeTruthy()
     })
   })
 
   describe('if the form contains a valid password and a valid email',() => {
-    it('should still display an inactive submit button', () => {
+    it('should display an active submit button', () => {
       const compiled = fixture.nativeElement as HTMLElement;
       const inputs = fixture.debugElement.queryAll(By.css('form input'))
       inputs[0].triggerEventHandler('input', { target: { value: 'validEmail@validEmail.com'}})
       inputs[1].triggerEventHandler('input', { target: { value: 'validPassword'}})
       fixture.detectChanges() // inputElement.dispatchEvent(new Event('input', { bubbles: true }));
       const submitButton = compiled.querySelector('button[type="submit"]')
+      // 2 valid fields => the submit button is now active
       expect((submitButton as HTMLButtonElement).disabled).toBeFalsy()
     })
   })
@@ -132,7 +143,9 @@ describe('LoginComponent', () => {
       const form = fixture.debugElement.query(By.css('.login-form'))
       form.triggerEventHandler('submit', null)
       expect(submitFn).toHaveBeenCalled()
+      // wrong credentials : the authservice mock broadcasts an error 
       expect(authServiceMock.login).toHaveBeenCalled()
+      expect(sessionServiceMock.logIn).not.toHaveBeenCalled()
       fixture.detectChanges()
       expect(fixture.debugElement.queryAll(By.css('.error'))).toBeTruthy()
     })
@@ -141,15 +154,19 @@ describe('LoginComponent', () => {
   describe('if the right credentials are submitted',() => {
     it('should navigate to the sessions page', () => {
       const inputs = fixture.debugElement.queryAll(By.css('form input'))
-      inputs[0].triggerEventHandler('input', { target: { value: 'yoga@studio.com'}})
-      inputs[1].triggerEventHandler('input', { target: { value: 'test!1234'}})
+      inputs[0].triggerEventHandler('input', { target: { value: 'email@email.com'}})
+      inputs[1].triggerEventHandler('input', { target: { value: 'validPassword'}})
       const submitFn = jest.spyOn(component, 'submit')
       fixture.detectChanges()
       const form = fixture.debugElement.query(By.css('.login-form'))
       expect(routerMock.navigate).not.toHaveBeenCalled()
       form.triggerEventHandler('submit', null)
       expect(submitFn).toHaveBeenCalled()
+      // valid credentials : the authservice mock broadcasts the session informations 
       expect(authServiceMock.login).toHaveBeenCalled()
+      // the service session is called
+      expect(sessionServiceMock.logIn).toHaveBeenCalled()
+      // & navigation to /sessions requested
       expect(routerMock.navigate).toHaveBeenCalledWith(['/sessions'])
       fixture.detectChanges()
       expect(fixture.debugElement.query(By.css('.error'))).toBeNull()
