@@ -76,6 +76,7 @@ describe('LoginComponent', () => {
     fixture = TestBed.createComponent(LoginComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
+    jest.clearAllMocks()
   })
 
   it('should create', () => {
@@ -121,7 +122,7 @@ describe('LoginComponent', () => {
     })
   })
 
-  describe('if the wrong credentials are entered',() => {
+  describe('if the wrong credentials are submitted',() => {
     it('should display an error message', () => {
       const inputs = fixture.debugElement.queryAll(By.css('form input'))
       inputs[0].triggerEventHandler('input', { target: { value: 'validEmail@validEmail.com'}})
@@ -134,6 +135,24 @@ describe('LoginComponent', () => {
       expect(authServiceMock.login).toHaveBeenCalled()
       fixture.detectChanges()
       expect(fixture.debugElement.queryAll(By.css('.error'))).toBeTruthy()
+    })
+  })
+
+  describe('if the right credentials are submitted',() => {
+    it('should navigate to the sessions page', () => {
+      const inputs = fixture.debugElement.queryAll(By.css('form input'))
+      inputs[0].triggerEventHandler('input', { target: { value: 'yoga@studio.com'}})
+      inputs[1].triggerEventHandler('input', { target: { value: 'test!1234'}})
+      const submitFn = jest.spyOn(component, 'submit')
+      fixture.detectChanges()
+      const form = fixture.debugElement.query(By.css('.login-form'))
+      expect(routerMock.navigate).not.toHaveBeenCalled()
+      form.triggerEventHandler('submit', null)
+      expect(submitFn).toHaveBeenCalled()
+      expect(authServiceMock.login).toHaveBeenCalled()
+      expect(routerMock.navigate).toHaveBeenCalledWith(['/sessions'])
+      fixture.detectChanges()
+      expect(fixture.debugElement.query(By.css('.error'))).toBeNull()
     })
   })
 
