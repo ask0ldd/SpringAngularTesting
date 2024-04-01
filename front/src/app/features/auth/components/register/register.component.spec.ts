@@ -14,6 +14,8 @@ import { SessionInformation } from 'src/app/interfaces/sessionInformation.interf
 import { of, throwError } from 'rxjs';
 import { LoginRequest } from '../../interfaces/loginRequest.interface';
 import { RegisterRequest } from '../../interfaces/registerRequest.interface';
+import { AuthService } from '../../services/auth.service';
+import { Router } from '@angular/router';
 
 // Init mocks
 const sessionInformation : SessionInformation = {
@@ -35,6 +37,27 @@ const sessionInformation : SessionInformation = {
   admin: true,
 }
 
+const validRegistration = {
+  firstname : "firstname",
+  lastname : "lastname",
+  email : "validemail@validemail.com",
+  password : "validPassword"
+}
+
+const registrationWithInvalidEmail = {
+  firstname : "firstname",
+  lastname : "lastname",
+  email : "invalidemail",
+  password : "validPassword"
+}
+
+const registrationWithShortPassword = {
+  firstname : "firstname",
+  lastname : "lastname",
+  email : "validemail@validemail.com",
+  password : "pswd"
+}
+
 // if credentials are email@email.com / validpassword : broadcast sessionInformation
 // if anything else : throwError
 const authServiceMock = {
@@ -46,7 +69,8 @@ const authServiceMock = {
   register: jest.fn((registerRequest : RegisterRequest) => {
     const err = new Error('test')
     if(registerRequest.email.length>50) return throwError(() => err)
-    return (void 0)
+    if(registerRequest.password.length<5) return throwError(() => err)
+    return of(void 0)
   })
 }
 
@@ -66,6 +90,10 @@ describe('RegisterComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [RegisterComponent],
+      providers: [
+        { provide: AuthService, useValue: authServiceMock }, // added to mock authservice
+        { provide: Router, useValue: routerMock },
+      ],
       imports: [
         BrowserAnimationsModule,
         HttpClientModule,
@@ -81,6 +109,7 @@ describe('RegisterComponent', () => {
     fixture = TestBed.createComponent(RegisterComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
+    jest.clearAllMocks()
   });
 
   it('should create', () => {
@@ -105,4 +134,76 @@ describe('RegisterComponent', () => {
     // the submit button should be disabled by default
     expect((submitButton as HTMLButtonElement).disabled).toBeTruthy()
   })
+
+  describe('if the form contains three valid fields and an invalid email',() => {
+    it('should still display an inactive submit button', () => {
+      const compiled = fixture.nativeElement as HTMLElement;
+      const inputs = fixture.debugElement.queryAll(By.css('form input'))
+      inputs[0].triggerEventHandler('input', { target: { value: registrationWithInvalidEmail.firstname}})
+      inputs[1].triggerEventHandler('input', { target: { value: registrationWithInvalidEmail.lastname}})
+      inputs[2].triggerEventHandler('input', { target: { value: registrationWithInvalidEmail.email}})
+      inputs[3].triggerEventHandler('input', { target: { value: registrationWithInvalidEmail.password}})
+      fixture.detectChanges()
+      const submitButton = compiled.querySelector('button[type="submit"]')
+      // the submit button should be disabled if one field is invalid
+      expect((submitButton as HTMLButtonElement).disabled).toBeTruthy()
+    })
+  })
+
+  describe('if the form contains only valid fields',() => {
+    it('should still display an active submit button', () => {
+      const compiled = fixture.nativeElement as HTMLElement;
+      const inputs = fixture.debugElement.queryAll(By.css('form input'))
+      inputs[0].triggerEventHandler('input', { target: { value: validRegistration.firstname}})
+      inputs[1].triggerEventHandler('input', { target: { value: validRegistration.lastname}})
+      inputs[2].triggerEventHandler('input', { target: { value: validRegistration.email}})
+      inputs[3].triggerEventHandler('input', { target: { value: validRegistration.password}})
+      fixture.detectChanges()
+      const submitButton = compiled.querySelector('button[type="submit"]')
+      // the submit button should be disabled if one field is invalid
+      expect((submitButton as HTMLButtonElement).disabled).toBeFalsy()
+    })
+  })
+
+  describe('if invalid datas are submitted',() => {
+    it('should display an error message', () => {
+      const inputs = fixture.debugElement.queryAll(By.css('form input'))
+      inputs[0].triggerEventHandler('input', { target: { value: registrationWithShortPassword.firstname}})
+      inputs[1].triggerEventHandler('input', { target: { value: registrationWithShortPassword.lastname}})
+      inputs[2].triggerEventHandler('input', { target: { value: registrationWithShortPassword.email}})
+      inputs[3].triggerEventHandler('input', { target: { value: registrationWithShortPassword.password}})
+      const submitFn = jest.spyOn(component, 'submit')
+      fixture.detectChanges()
+      const form = fixture.debugElement.query(By.css('.register-form'))
+      form.triggerEventHandler('submit', null)
+      expect(submitFn).toHaveBeenCalled()
+      // wrong credentials : the authservice mock broadcasts an error 
+      expect(authServiceMock.register).toHaveBeenCalled()
+      expect(routerMock.navigate).not.toHaveBeenCalled()
+      fixture.detectChanges()
+      expect(fixture.debugElement.queryAll(By.css('.error'))).toBeTruthy()
+    })
+  })
+
+  describe('if valid datas are submitted',() => {
+    it('should navigate to the login page', () => {
+      const inputs = fixture.debugElement.queryAll(By.css('form input'))
+      inputs[0].triggerEventHandler('input', { target: { value: validRegistration.firstname}})
+      inputs[1].triggerEventHandler('input', { target: { value: validRegistration.lastname}})
+      inputs[2].triggerEventHandler('input', { target: { value: validRegistration.email}})
+      inputs[3].triggerEventHandler('input', { target: { value: validRegistration.password}})
+      const submitFn = jest.spyOn(component, 'submit')
+      fixture.detectChanges()
+      const form = fixture.debugElement.query(By.css('.register-form'))
+      form.triggerEventHandler('submit', null)
+      expect(submitFn).toHaveBeenCalled()
+      // wrong credentials : the authservice mock broadcasts an error 
+      expect(authServiceMock.register).toHaveBeenCalled()
+      expect(routerMock.navigate).toHaveBeenCalledWith(['/login'])
+      fixture.detectChanges()
+      expect(fixture.debugElement.query(By.css('.error'))).toBeNull()
+    })
+  })
+
+  // UT should test how validation react without template
 });
