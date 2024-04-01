@@ -20,6 +20,7 @@ import { TeacherService } from 'src/app/services/teacher.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DebugElement } from '@angular/core';
 import { DatePipe, TitleCasePipe, UpperCasePipe } from '@angular/common';
+import { Teacher } from 'src/app/interfaces/teacher.interface';
 
 const mockSession : Session = {
   id : 1,
@@ -32,7 +33,7 @@ const mockSession : Session = {
   updatedAt : new Date(),
 }
 
-const teacher = {
+const teacher : Teacher = {
   id: 1,
   lastName: "lastname",
   firstName: "firstname",
@@ -67,6 +68,10 @@ describe('DetailComponent', () => {
         get : (id : any) => 1
       }
     }
+  }
+
+  const routerMock = {
+    navigate : jest.fn((commands : string[]) => null)
   }
 
   describe('As a regular user', () => {
@@ -144,7 +149,7 @@ describe('DetailComponent', () => {
       expect(fixture.debugElement.query(By.css('mat-card-subtitle')).nativeElement.textContent).toContain(component.teacher?.firstName + ' ' + upperCasePipe.transform(component.teacher?.lastName))
     })
 
-    // Unit Test
+    // Unit Test : Back button
     it('should go back in history when clicking on the back button', () => {
       const windowHistorySpy = jest.spyOn(window.history, 'back')
       const backButton = fixture.debugElement.query(By.css('button[mat-icon-button]'))
@@ -152,9 +157,10 @@ describe('DetailComponent', () => {
       expect(windowHistorySpy).toHaveBeenCalled()
     })
 
-    // Unit Test
+    // Unit Test : Participate button
     describe('as a non participant to the session', () => {
       it('should display a participate button which should be calling sessionAPIservice.participate()', () => {
+        // init to be sure the user is not already a participant
         mockSessionAPIService.unParticipate()
         const buttons = fixture.debugElement.queryAll(By.css('button'))
         expect(buttons.length).toBe(2)
@@ -169,9 +175,10 @@ describe('DetailComponent', () => {
       })
     })
 
-    // Unit Test
+    // Unit Test : Unparticipate button
     describe('as a participant to the session', () => {
       it('should display a do not participate button  which should be calling sessionAPIservice.unparticipate()', () => {
+        // init to be sure the user is a participant
         mockSessionAPIService.participate()
         const buttons = fixture.debugElement.queryAll(By.css('button'))
         expect(buttons.length).toBe(2)
@@ -235,6 +242,7 @@ describe('DetailComponent', () => {
         { provide: TeacherService, useValue : mockTeacherService},
         { provide: MatSnackBar, useValue : snackBarMock },
         { provide: ActivatedRoute, useValue : activatedRouteMock },
+        { provide: Router, useValue: routerMock },
       ]
       })
         .compileComponents();
@@ -249,17 +257,13 @@ describe('DetailComponent', () => {
       expect(component).toBeTruthy();
     })
 
-    // Unit Test
+    // Unit Test : Delete button
     it('should display a delete button which should be calling sessionAPIservice.delete()', () => {
-      const router = TestBed.inject(Router)
-      router.navigate = jest.fn()
       const deleteButton = fixture.debugElement.queryAll(By.css('button[color="warn"]'))[0]
       deleteButton.triggerEventHandler('click', null)
       expect(mockSessionAPIService.delete).toHaveBeenCalledWith(mockSession.id)
-      expect(router.navigate).toHaveBeenCalledWith(['sessions']) 
+      expect(routerMock.navigate).toHaveBeenCalledWith(['sessions']) 
     })
-
-    
   })
 });
 

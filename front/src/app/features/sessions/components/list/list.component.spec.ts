@@ -141,6 +141,8 @@ describe('ListComponent', () => {
 
   // Unit Test : Clicking the edit button should trigger action
 
+  // clicking on the create button
+
   // Unit Test
   describe('the component user getter', () => {
     it('should return the sessionInformations', () => {

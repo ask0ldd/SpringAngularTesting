@@ -14,16 +14,22 @@ import { SessionService } from 'src/app/services/session.service';
 import { SessionApiService } from '../../services/session-api.service';
 
 import { FormComponent } from './form.component';
+import { By } from '@angular/platform-browser';
+import { Router } from '@angular/router';
+
+const mockSessionService = {
+  sessionInformation: {
+    admin: true
+  }
+} 
+
+const routerMock = {
+  navigate : jest.fn((commands : string[]) => null)
+}
 
 describe('FormComponent', () => {
   let component: FormComponent;
   let fixture: ComponentFixture<FormComponent>;
-
-  const mockSessionService = {
-    sessionInformation: {
-      admin: true
-    }
-  } 
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -42,7 +48,8 @@ describe('FormComponent', () => {
       ],
       providers: [
         { provide: SessionService, useValue: mockSessionService },
-        SessionApiService
+        SessionApiService,
+        // { provide: Router, useValue: routerMock },
       ],
       declarations: [FormComponent]
     })
@@ -56,4 +63,12 @@ describe('FormComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  // Unit Test
+  /*it('should go back in history when clicking on the back button', () => {
+    const windowHistorySpy = jest.spyOn(window.history, 'back')
+    const backButton = fixture.debugElement.query(By.css('button[mat-icon-button]'))
+    backButton.triggerEventHandler('click', null)
+    expect(windowHistorySpy).toHaveBeenCalled()
+  })*/
 });
