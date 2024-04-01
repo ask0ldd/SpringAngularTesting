@@ -77,3 +77,6 @@
 /front/Thumbs.db
 
 /front/**/.DS_Store 
+
+# Cypress
+/front/.nyc_output/**
