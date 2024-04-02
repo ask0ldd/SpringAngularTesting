@@ -10,7 +10,6 @@ import { of } from 'rxjs';
 import { SessionService } from './services/session.service';
 import { By } from '@angular/platform-browser';
 import { Router } from '@angular/router';
-import { Location } from '@angular/common';
 import { NgZone } from '@angular/core';
 
 const mockSessionInformation : SessionInformation = {
@@ -40,20 +39,11 @@ const sessionServiceMock = {
   logOut : jest.fn(() => (void 0)),
 }
 
-const routerMock = {
-  navigate : jest.fn((commands : string[]) => null),
-  navigateByUrl : jest.fn((commands : string[]) => null)
-}
-
-const locationMock = {
-  path() {
-    return '';
-  }
-}
-
 describe('AppComponent', () => {
   let component: AppComponent;
   let fixture: ComponentFixture<AppComponent>;
+  let router : Router
+  let ngZone : NgZone
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -67,12 +57,12 @@ describe('AppComponent', () => {
       ],
       providers: [
         { provide: SessionService, useValue: sessionServiceMock },
-        { provide: Location, useValue: locationMock },
-        // { provide: Router, useValue : routerMock}
       ],
     }).compileComponents();
     
     fixture = TestBed.createComponent(AppComponent);
+    router = TestBed.inject(Router)
+    ngZone = TestBed.inject(NgZone)
     component = fixture.componentInstance;
     fixture.detectChanges();
     jest.clearAllMocks()
@@ -93,8 +83,6 @@ describe('AppComponent', () => {
 
     describe('and the login button is clicked', () => {
       it('should redirect the user to the login page', () => {
-        const router = TestBed.inject(Router)
-        const ngZone = TestBed.inject(NgZone)
         jest.spyOn(router, 'navigateByUrl')
         const loginButton = fixture.debugElement.query(By.css('span[routerlink="login"]'))
         expect(router.navigateByUrl).not.toHaveBeenCalled()
@@ -108,8 +96,6 @@ describe('AppComponent', () => {
 
     describe('and the register button is clicked', () => {
       it('should redirect the user to the register page', () => {
-        const router = TestBed.inject(Router)
-        const ngZone = TestBed.inject(NgZone)
         jest.spyOn(router, 'navigateByUrl')
         const registerButton = fixture.debugElement.query(By.css('span[routerlink="register"]'))
         expect(router.navigateByUrl).not.toHaveBeenCalled()
@@ -139,8 +125,6 @@ describe('AppComponent', () => {
 
     describe('and the logout button is clicked', () => {
       it('should log you out and redirect you to the homepage', () => {
-        const router = TestBed.inject(Router);
-        const ngZone = TestBed.inject(NgZone);
         jest.spyOn(router, 'navigate');
         const logoutButton = fixture.debugElement.queryAll(By.css('span.link'))[2]
         expect(sessionServiceMock.logOut).not.toHaveBeenCalled()
@@ -155,8 +139,6 @@ describe('AppComponent', () => {
 
     describe('and the session button is clicked', () => {
       it('should redirect the user to the sessions page', () => {
-        const router = TestBed.inject(Router)
-        const ngZone = TestBed.inject(NgZone)
         jest.spyOn(router, 'navigateByUrl')
         const sessionButton = fixture.debugElement.query(By.css('span[routerlink="sessions"]'))
         expect(router.navigateByUrl).not.toHaveBeenCalled()
@@ -170,8 +152,6 @@ describe('AppComponent', () => {
 
     describe('and the account button is clicked', () => {
       it('should redirect the user to the me page', () => {
-        const router = TestBed.inject(Router)
-        const ngZone = TestBed.inject(NgZone)
         jest.spyOn(router, 'navigateByUrl')
         const accountButton = fixture.debugElement.query(By.css('span[routerlink="me"]'))
         expect(router.navigateByUrl).not.toHaveBeenCalled()
