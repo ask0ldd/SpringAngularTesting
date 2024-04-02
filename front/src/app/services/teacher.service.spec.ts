@@ -43,7 +43,7 @@ describe('TeacherService', () => {
   });
 
   describe('when the all method is called', () => {
-    it('should return an observable broadcasting an array of teachers', () => {
+    it('should send a request to the expected endpoint & sreturn an observable broadcasting an array of teachers', () => {
       const targetEndpoint = `${pathService}`
 
       jest.spyOn(httpClient, 'get').mockReturnValue(of([{...teacher1}, {...teacher2}]))
@@ -59,7 +59,7 @@ describe('TeacherService', () => {
   })
 
   describe('when the detail method is called with a teacher id passed to it', () => {
-    it('should return an observable broadcasting the infos of the target teacher', () => {
+    it('should send a request to the expected endpoint & return an observable broadcasting the infos of the target teacher', () => {
       const teacherId = '1'
       const targetEndpoint = `${pathService}/${teacherId}`
 
