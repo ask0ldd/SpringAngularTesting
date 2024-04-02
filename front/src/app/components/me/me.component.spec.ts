@@ -81,16 +81,22 @@ describe('MeComponent', () => {
 
   // Unit Test
   it('should go back in history when clicking on the back button', () => {
+    // Arrange
     const windowHistorySpy = jest.spyOn(window.history, 'back')
     const backButton = fixture.debugElement.query(By.css('button[mat-icon-button]'))
+    // Act
     backButton.triggerEventHandler('click', null)
+    // Assert
     expect(windowHistorySpy).toHaveBeenCalled()
   })
 
   describe('if i click on the delete button', () => {
     it('should try to delete my account, display a related message into a snackbar, logout and redirect me to the homepage', () => {
+      // Arrange
       const deleteAccountButton = fixture.debugElement.query(By.css('button[color="warn"]'))
+      // Act
       deleteAccountButton.triggerEventHandler('click', null)
+      // Assert
       expect(mockUserService.delete).toHaveBeenCalledWith(mockSessionService.sessionInformation.id.toString())
       expect(snackBarMock.open).toHaveBeenCalledWith("Your account has been deleted !", 'Close', { duration: 3000 })
       expect(mockSessionService.logOut).toHaveBeenCalled()

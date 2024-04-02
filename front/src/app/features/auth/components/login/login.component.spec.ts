@@ -91,14 +91,15 @@ describe('LoginComponent', () => {
   })
 
   it('should render the login title, the fields and the an inactive submit button', () => {
-    expect(fixture.debugElement.query(By.css('mat-card-title')).nativeElement.textContent).toBe("Login")
     /*
       compiled ?
       When you use fixture.debugElement.queryAll(By.css('form input')) in your Jest test, you're selecting the raw HTML input elements, 
       not the Angular Material components. This means that the placeholder attribute, which is set on the Material component, 
       is not being reflected in the selected input elements.
     */
+    // Assert
     const compiled = fixture.nativeElement as HTMLElement;
+    expect(fixture.debugElement.query(By.css('mat-card-title')).nativeElement.textContent).toBe("Login")
     expect(compiled.querySelector('input[data-placeholder="Email"]')).toBeTruthy()
     expect(compiled.querySelector('input[data-placeholder="Password"]')).toBeTruthy()
     const submitButton = compiled.querySelector('button[type="submit"]')
@@ -109,11 +110,14 @@ describe('LoginComponent', () => {
 
   describe('if the form contains a valid password but with an invalid email',() => {
     it('should still display an inactive submit button', () => {
+      // Arrange
       const compiled = fixture.nativeElement as HTMLElement;
       const inputs = fixture.debugElement.queryAll(By.css('form input'))
+      // Act
       inputs[0].triggerEventHandler('input', { target: { value: 'invalidEmail'}})
       inputs[1].triggerEventHandler('input', { target: { value: 'validPassword'}})
       fixture.detectChanges()
+      // Assert
       const submitButton = compiled.querySelector('button[type="submit"]')
       // the submit button should be disabled if only one field is valid
       expect((submitButton as HTMLButtonElement).disabled).toBeTruthy()
@@ -122,11 +126,14 @@ describe('LoginComponent', () => {
 
   describe('if the form contains a valid password and a valid email',() => {
     it('should display an active submit button', () => {
+      // Arrange
       const compiled = fixture.nativeElement as HTMLElement;
       const inputs = fixture.debugElement.queryAll(By.css('form input'))
+      // Act
       inputs[0].triggerEventHandler('input', { target: { value: 'validEmail@validEmail.com'}})
       inputs[1].triggerEventHandler('input', { target: { value: 'validPassword'}})
       fixture.detectChanges() // inputElement.dispatchEvent(new Event('input', { bubbles: true }));
+      // Assert
       const submitButton = compiled.querySelector('button[type="submit"]')
       // 2 valid fields => the submit button is now active
       expect((submitButton as HTMLButtonElement).disabled).toBeFalsy()
@@ -135,32 +142,37 @@ describe('LoginComponent', () => {
 
   describe('if the wrong credentials are submitted',() => {
     it('should display an error message', () => {
+      // Arrange
       const inputs = fixture.debugElement.queryAll(By.css('form input'))
+      const submitFn = jest.spyOn(component, 'submit')
+      const form = fixture.debugElement.query(By.css('.login-form'))
+      // Act
       inputs[0].triggerEventHandler('input', { target: { value: 'validEmail@validEmail.com'}})
       inputs[1].triggerEventHandler('input', { target: { value: 'validPassword'}})
-      const submitFn = jest.spyOn(component, 'submit')
       fixture.detectChanges()
-      const form = fixture.debugElement.query(By.css('.login-form'))
       form.triggerEventHandler('submit', null)
+      // Assert
       expect(submitFn).toHaveBeenCalled()
       // wrong credentials : the authservice mock broadcasts an error 
       expect(authServiceMock.login).toHaveBeenCalled()
       expect(sessionServiceMock.logIn).not.toHaveBeenCalled()
-      fixture.detectChanges()
       expect(fixture.debugElement.queryAll(By.css('.error'))).toBeTruthy()
     })
   })
 
   describe('if the right credentials are submitted',() => {
     it('should navigate to the sessions page', () => {
+      // Arrange
       const inputs = fixture.debugElement.queryAll(By.css('form input'))
+      const submitFn = jest.spyOn(component, 'submit')
+      const form = fixture.debugElement.query(By.css('.login-form'))
+      // Act
       inputs[0].triggerEventHandler('input', { target: { value: 'email@email.com'}})
       inputs[1].triggerEventHandler('input', { target: { value: 'validPassword'}})
-      const submitFn = jest.spyOn(component, 'submit')
       fixture.detectChanges()
-      const form = fixture.debugElement.query(By.css('.login-form'))
       expect(routerMock.navigate).not.toHaveBeenCalled()
       form.triggerEventHandler('submit', null)
+      // Assert
       expect(submitFn).toHaveBeenCalled()
       // valid credentials : the authservice mock broadcasts the session informations 
       expect(authServiceMock.login).toHaveBeenCalled()

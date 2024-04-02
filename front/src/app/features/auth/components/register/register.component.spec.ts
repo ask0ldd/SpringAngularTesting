@@ -117,6 +117,7 @@ describe('RegisterComponent', () => {
   });
 
   it('should render the register title, the fields and the an inactive submit button', () => {
+    // Assert
     expect(fixture.debugElement.query(By.css('mat-card-title')).nativeElement.textContent).toBe("Register")
     /*
       compiled ?
@@ -137,14 +138,17 @@ describe('RegisterComponent', () => {
 
   describe('if the form contains three valid fields and an invalid email',() => {
     it('should still display an inactive submit button', () => {
+      // Arrange
       const compiled = fixture.nativeElement as HTMLElement;
       const inputs = fixture.debugElement.queryAll(By.css('form input'))
+      const submitButton = compiled.querySelector('button[type="submit"]')
+      // Act
       inputs[0].triggerEventHandler('input', { target: { value: registrationWithInvalidEmail.firstname}})
       inputs[1].triggerEventHandler('input', { target: { value: registrationWithInvalidEmail.lastname}})
       inputs[2].triggerEventHandler('input', { target: { value: registrationWithInvalidEmail.email}})
       inputs[3].triggerEventHandler('input', { target: { value: registrationWithInvalidEmail.password}})
       fixture.detectChanges()
-      const submitButton = compiled.querySelector('button[type="submit"]')
+      // Assert
       // the submit button should be disabled if one field is invalid
       expect((submitButton as HTMLButtonElement).disabled).toBeTruthy()
     })
@@ -152,14 +156,17 @@ describe('RegisterComponent', () => {
 
   describe('if the form contains only valid fields',() => {
     it('should still display an active submit button', () => {
+      // Arrange
       const compiled = fixture.nativeElement as HTMLElement;
       const inputs = fixture.debugElement.queryAll(By.css('form input'))
+      const submitButton = compiled.querySelector('button[type="submit"]')
+      // Act
       inputs[0].triggerEventHandler('input', { target: { value: validRegistration.firstname}})
       inputs[1].triggerEventHandler('input', { target: { value: validRegistration.lastname}})
       inputs[2].triggerEventHandler('input', { target: { value: validRegistration.email}})
       inputs[3].triggerEventHandler('input', { target: { value: validRegistration.password}})
       fixture.detectChanges()
-      const submitButton = compiled.querySelector('button[type="submit"]')
+      // Assert
       // the submit button should be disabled if one field is invalid
       expect((submitButton as HTMLButtonElement).disabled).toBeFalsy()
     })
@@ -167,15 +174,18 @@ describe('RegisterComponent', () => {
 
   describe('if invalid datas are submitted',() => {
     it('should display an error message', () => {
+      // Arrange
       const inputs = fixture.debugElement.queryAll(By.css('form input'))
+      const submitFn = jest.spyOn(component, 'submit')
+      const form = fixture.debugElement.query(By.css('.register-form'))
+      // Act
       inputs[0].triggerEventHandler('input', { target: { value: registrationWithShortPassword.firstname}})
       inputs[1].triggerEventHandler('input', { target: { value: registrationWithShortPassword.lastname}})
       inputs[2].triggerEventHandler('input', { target: { value: registrationWithShortPassword.email}})
       inputs[3].triggerEventHandler('input', { target: { value: registrationWithShortPassword.password}})
-      const submitFn = jest.spyOn(component, 'submit')
       fixture.detectChanges()
-      const form = fixture.debugElement.query(By.css('.register-form'))
       form.triggerEventHandler('submit', null)
+      // Assert
       expect(submitFn).toHaveBeenCalled()
       // wrong credentials : the authservice mock broadcasts an error 
       expect(authServiceMock.register).toHaveBeenCalled()
@@ -187,15 +197,18 @@ describe('RegisterComponent', () => {
 
   describe('if valid datas are submitted',() => {
     it('should navigate to the login page', () => {
+      // Arrange
       const inputs = fixture.debugElement.queryAll(By.css('form input'))
+      const submitFn = jest.spyOn(component, 'submit')
+      const form = fixture.debugElement.query(By.css('.register-form'))
+      // Act
       inputs[0].triggerEventHandler('input', { target: { value: validRegistration.firstname}})
       inputs[1].triggerEventHandler('input', { target: { value: validRegistration.lastname}})
       inputs[2].triggerEventHandler('input', { target: { value: validRegistration.email}})
       inputs[3].triggerEventHandler('input', { target: { value: validRegistration.password}})
-      const submitFn = jest.spyOn(component, 'submit')
       fixture.detectChanges()
-      const form = fixture.debugElement.query(By.css('.register-form'))
       form.triggerEventHandler('submit', null)
+      // Assert
       expect(submitFn).toHaveBeenCalled()
       // wrong credentials : the authservice mock broadcasts an error 
       expect(authServiceMock.register).toHaveBeenCalled()
