@@ -1,0 +1,16 @@
+ [
+    {
+        "id" : 1,
+        "firstName" : "teacher1",
+        "lastName" : "lastname1",
+        "createdAt" : "2023-12-29 01:07:22",
+        "updatedAt" : "2023-12-29 01:07:22"
+    },
+    {
+        "id" : 2,
+        "firstName" : "teacher2",
+        "lastName" : "lastname2",
+        "createdAt" : "2023-12-29 01:07:22",
+        "updatedAt" : "2023-12-29 01:07:22"
+    }
+ ]
