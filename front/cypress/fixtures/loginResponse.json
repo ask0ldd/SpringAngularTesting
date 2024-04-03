@@ -1,0 +1,9 @@
+{
+    "token": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ5b2dhQHN0dWRpby5jb20iLCJpYXQiOjE3MTIwMDI4NTEsImV4cCI6MTcxMjA4OTI1MX0.WhlvHw9kw0NPtORRoiZh5_Lm0Ic3r7CvuBJv0w4rvW2ZrRO14OcMiO4MBt-0aQ83-bD0xmuwLT9V0mqvfXRcRw",
+    "type": "Bearer",
+    "id": 1,
+    "username": "yoga@studio.com",
+    "firstName": "Admin",
+    "lastName": "Admin",
+    "admin": true
+}
