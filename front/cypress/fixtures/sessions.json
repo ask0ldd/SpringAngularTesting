@@ -1,0 +1,21 @@
+[{
+    "id" : 1,
+    "name" : "yoga fire",
+    "date" : "2024-12-29 01:07:22",
+    "teacher_id" : 1,
+    "description" : "yoga fire description",
+    "users" : [1],
+    "createdAt" : "2023-12-29 01:07:22",
+    "updatedAt" : "2023-12-29 01:07:22"
+},
+{
+    "id" : 2,
+    "name" : "yoga flame",
+    "date" : "2024-12-29 01:07:22",
+    "teacher_id" : 1,
+    "description" : "yoga flame description",
+    "users" : [1],
+    "createdAt" : "2023-12-29 01:07:22",
+    "updatedAt" : "2023-12-29 01:07:22"
+}
+]
