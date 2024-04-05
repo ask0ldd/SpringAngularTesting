@@ -1,0 +1,10 @@
+[{
+    "id" : 1,
+    "name" : "yoga sansara",
+    "date" : "2024-12-29 01:07:22",
+    "teacher_id" : 1,
+    "description" : "yoga sansara description",
+    "users" : [1],
+    "createdAt" : "2023-12-29 01:07:22",
+    "updatedAt" : "2023-12-29 01:07:22"
+}]

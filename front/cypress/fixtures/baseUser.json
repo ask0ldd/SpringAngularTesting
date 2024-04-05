@@ -1,0 +1,9 @@
+{
+    "id" : 1,
+    "email" : "john.doe@email.com",
+    "firstName" : "basic",
+    "lastName" : "user",
+    "admin" : false,
+    "createdAt" : "2023-12-29 01:07:22",
+    "updatedAt" : "2023-12-29 01:07:22"
+}
