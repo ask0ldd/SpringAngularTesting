@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 @SpringBootApplication
-@EnableJpaAuditing
+// @EnableJpaAuditing
 public class SpringBootSecurityJwtApplication {
 	public static void main(String[] args) {
     SpringApplication.run(SpringBootSecurityJwtApplication.class, args);
