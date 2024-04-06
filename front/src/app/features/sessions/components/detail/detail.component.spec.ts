@@ -18,7 +18,6 @@ import { MatSelectModule } from '@angular/material/select';
 import { SessionApiService } from '../../services/session-api.service';
 import { TeacherService } from 'src/app/services/teacher.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { DebugElement } from '@angular/core';
 import { DatePipe, TitleCasePipe, UpperCasePipe } from '@angular/common';
 import { Teacher } from 'src/app/interfaces/teacher.interface';
 
@@ -118,7 +117,7 @@ describe('DetailComponent', () => {
         { provide: SessionApiService, useValue : mockSessionAPIService},
         { provide: TeacherService, useValue : mockTeacherService},
         { provide: MatSnackBar, useValue : snackBarMock },
-        { provide: ActivatedRoute, useValue : activatedRouteMock },
+        { provide: ActivatedRoute, useValue : activatedRouteMock }, // used to mock the function returning the url sessionId param
       ]
       })
         .compileComponents();

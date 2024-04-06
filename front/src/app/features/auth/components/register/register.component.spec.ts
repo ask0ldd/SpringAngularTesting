@@ -16,6 +16,7 @@ import { LoginRequest } from '../../interfaces/loginRequest.interface';
 import { RegisterRequest } from '../../interfaces/registerRequest.interface';
 import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
 
 // Init mocks
 const sessionInformation : SessionInformation = {
@@ -95,6 +96,7 @@ describe('RegisterComponent', () => {
         { provide: Router, useValue: routerMock },
       ],
       imports: [
+        RouterTestingModule,
         BrowserAnimationsModule,
         HttpClientModule,
         ReactiveFormsModule,  
