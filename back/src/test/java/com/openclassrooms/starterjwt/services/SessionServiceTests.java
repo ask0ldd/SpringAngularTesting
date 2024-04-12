@@ -10,10 +10,9 @@ import com.openclassrooms.starterjwt.repository.UserRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.*;
 
@@ -23,16 +22,12 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-@SpringBootTest
-// @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public class SessionServiceTests {
-    @Autowired
+    @InjectMocks
     private SessionService sessionService;
-
-    @MockBean
+    @Mock
     private SessionRepository sessionRepository;
-
-    @MockBean
+    @Mock
     private UserRepository userRepository;
 
     // TODO : should bcrypt the password
