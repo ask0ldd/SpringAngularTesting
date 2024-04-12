@@ -7,34 +7,30 @@ import com.openclassrooms.starterjwt.security.services.UserDetailsImpl;
 import com.openclassrooms.starterjwt.services.UserService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.mockito.InjectMocks;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
+import org.mockito.Mock;
 
-@ExtendWith(SpringExtension.class)
-@SpringBootTest
+@ExtendWith(MockitoExtension.class)
 public class UserControllerTests {
-    @MockBean
+    @Mock
     private UserService userService;
-
-    @MockBean
+    @Mock
     private UserMapper userMapper;
-
-    @Autowired
+    @InjectMocks
     private UserController userController;
 
     private final User user1 = User.builder().id(1L).admin(true).email("ced@ced.com").firstName("john").lastName("doe").password("aeazezeaeazeae").build();
+    private final User user2 = User.builder().id(2L).admin(true).email("ced2@ced.com").firstName("jane").lastName("doe").password("aeazezeaeazeae2").build();
     private final UserDto userDto = new UserDto();
 
     private UserControllerTests() {
@@ -128,5 +124,27 @@ public class UserControllerTests {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
 
-    // !!! TODO : Unauthorized line
+    @Test
+    public void testDeleteUser_TheLoggedUserIsTryingToDeleteAnotherUserProfile() {
+        // Arrange
+        // user1 as Principal
+        UserDetails userDetails = UserDetailsImpl.builder()
+                .admin(false)
+                .username(user1.getEmail())
+                .password(user1.getPassword())
+                .lastName(user1.getLastName())
+                .firstName(user1.getFirstName())
+                .id(1L)
+                .build();
+        Authentication authentication = mock(Authentication.class);
+        when(authentication.getPrincipal()).thenReturn(userDetails);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        // asking to delete the user2 profile
+        when(userService.findById(anyLong())).thenReturn(user2);
+        // Act
+        ResponseEntity<?> response = userController.save(user2.getId().toString());
+        // Assert
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
+    }
+
 }
