@@ -2,12 +2,14 @@ package com.openclassrooms.starterjwt.repository;
 
 import com.openclassrooms.starterjwt.models.Teacher;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.jdbc.EmbeddedDatabaseConnection;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.jdbc.Sql;
 
 import java.util.List;
 
@@ -15,6 +17,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 // @DataJpaTest
 @SpringBootTest
+@Sql(scripts = "classpath:sql/reset-database.sql")
 public class TeacherRepositoryTests {
 
     @Autowired
@@ -70,6 +73,6 @@ public class TeacherRepositoryTests {
         assertThat(savedTeacher2).isNotNull();
         List<Teacher> teachersList = teacherRepository.findAll();
         assertThat(teachersList).isNotNull();
-        assertThat(teachersList.size()).isEqualTo(2);
+        assertThat(teachersList.size()).isEqualTo(4);
     }
 }

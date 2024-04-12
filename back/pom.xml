@@ -106,7 +106,17 @@
 			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
-				<version>0.8.5</version>
+				<version>0.8.12</version>
+				<configuration>
+					<excludes>
+						<exclude>
+							com/openclassrooms/starterjwt/dto/*.*
+						</exclude>
+						<exclude>
+							com/openclassrooms/starterjwt/SpringBootSecurityJwtApplication.*
+						</exclude>
+					</excludes>
+				</configuration>
 				<executions>
 					<execution>
 						<goals>
