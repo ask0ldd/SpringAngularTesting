@@ -7,13 +7,11 @@ import com.openclassrooms.starterjwt.services.TeacherService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -23,16 +21,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 
-@ExtendWith(SpringExtension.class)
-@SpringBootTest
+@ExtendWith(MockitoExtension.class)
 public class TeacherControllerTests {
-    @MockBean
+    @Mock
     private TeacherService teacherService;
-
-    @MockBean
+    @Mock
     private TeacherMapper teacherMapper;
-
-    @Autowired
+    @InjectMocks
     private TeacherController teacherController;
 
     private final Teacher teacher1 = Teacher.builder().id(1L).firstName("teacher1Fn").lastName("teacher1Ln").build();
@@ -75,6 +70,7 @@ public class TeacherControllerTests {
         String invalidTeacherId = "aaa";
         ResponseEntity<?> response = teacherController.findById(invalidTeacherId);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        verify(teacherService, never()).findById(anyLong());
     }
 
     @Test
