@@ -1,5 +1,7 @@
 package com.openclassrooms.starterjwt.services;
 
+import com.openclassrooms.starterjwt.exception.BadRequestException;
+import com.openclassrooms.starterjwt.exception.NotFoundException;
 import com.openclassrooms.starterjwt.models.Session;
 import com.openclassrooms.starterjwt.models.Teacher;
 import com.openclassrooms.starterjwt.models.User;
@@ -8,20 +10,19 @@ import com.openclassrooms.starterjwt.repository.UserRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 
-@ExtendWith(SpringExtension.class)
+@ExtendWith(MockitoExtension.class)
 @SpringBootTest
 // @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public class SessionServiceTests {
@@ -42,6 +43,7 @@ public class SessionServiceTests {
     private final Teacher teacher1 = Teacher.builder().id(1L).firstName("teacher1Fn").lastName("teacher1Ln").build();
     private final Session session1 = Session.builder().id(1L).name("session1Name").description("session1Description").date(new Date()).teacher(teacher1).users(new ArrayList<>((Arrays.asList(user1, user2)))).build();
     private final Session session2 = Session.builder().id(2L).name("session2Name").description("session2Description").date(new Date()).teacher(teacher1).users(new ArrayList<>((Arrays.asList(user1, user2)))).build();
+    private final Session sessionWithNoParticipant = Session.builder().id(1L).name("session1Name").description("session1Description").date(new Date()).teacher(teacher1).users(new ArrayList<>((Collections.emptyList()))).build();
 
     @Test
     @DisplayName("When the session targeted by .getById() exists, it should return the contained session")
@@ -162,9 +164,54 @@ public class SessionServiceTests {
         verify(sessionRepository, times(1)).save(expectedUpdatedSession);
     }
 
+    @Test
+    void subscribingToAnUnknownTargetSession() {
+        // Arrange
+        Long userId = 1L;
+        Long sessionId = 1L;
+        when(sessionRepository.findById(anyLong())).thenReturn(Optional.empty());
+        when(userRepository.findById(anyLong())).thenReturn(Optional.of(user1));
+        // Assert
+        assertThrows(NotFoundException.class, () -> {
+            sessionService.participate(sessionId, userId);
+        });
+        verify(sessionRepository, times(1)).findById(anyLong());
+        verify(sessionRepository, never()).save(any(Session.class));
+    }
+
+    @Test
+    void subscribingANonExistentUser() {
+        // Arrange
+        Long userId = 1L;
+        Long sessionId = 1L;
+        when(sessionRepository.findById(anyLong())).thenReturn(Optional.of(session1));
+        when(userRepository.findById(anyLong())).thenReturn(Optional.empty());
+        // Assert
+        assertThrows(NotFoundException.class, () -> {
+            sessionService.participate(sessionId, userId);
+        });
+        verify(sessionRepository, times(1)).findById(anyLong());
+        verify(sessionRepository, never()).save(any(Session.class));
+    }
+
+    @Test
+    void subscribingToASession_alreadySubscribedUser() {
+        // Arrange
+        Long userId = 1L;
+        Long sessionId = 1L;
+        when(sessionRepository.findById(anyLong())).thenReturn(Optional.of(session1));
+        when(userRepository.findById(anyLong())).thenReturn(Optional.of(user1));
+        // Assert
+        assertThrows(BadRequestException.class, () -> {
+            sessionService.participate(sessionId, userId);
+        });
+        verify(sessionRepository, times(1)).findById(anyLong());
+        verify(sessionRepository, never()).save(any(Session.class));
+    }
+
     // unparticipate
     @Test
-    void whenUnsubscribingSuccessfullyFromASession() {
+    void unsubscribingFromASession_Success() {
         // Arrange
         Long userId = 1L;
         Long sessionId = 1L;
@@ -184,11 +231,35 @@ public class SessionServiceTests {
 
         // Act
         sessionService.noLongerParticipate(sessionId, userId);
-
+        verify(sessionRepository, times(1)).findById(anyLong());
         verify(sessionRepository, times(1)).save(expectedUpdatedSession);
     }
 
+    @Test
+    void unsubscribingFromAnUnknownTargetSession() {
+        // Arrange
+        Long userId = 1L;
+        Long sessionId = 1L;
+        when(sessionRepository.findById(anyLong())).thenReturn(Optional.empty());
+        // Assert
+        assertThrows(NotFoundException.class, () -> {
+            sessionService.noLongerParticipate(sessionId, userId);
+        });
+        verify(sessionRepository, times(1)).findById(anyLong());
+        verify(sessionRepository, never()).deleteById(anyLong());
+    }
 
-    // TODO : IllegalArgumentException for all
-    // All exceptions
+    @Test
+    void unsubscribingFromASession_alreadyUnsubscribed() {
+        // Arrange
+        Long userId = 1L;
+        Long sessionId = 1L;
+        when(sessionRepository.findById(anyLong())).thenReturn(Optional.of(sessionWithNoParticipant));
+        // Assert
+        assertThrows(BadRequestException.class, () -> {
+            sessionService.noLongerParticipate(sessionId, userId);
+        });
+        verify(sessionRepository, times(1)).findById(anyLong());
+        verify(sessionRepository, never()).deleteById(anyLong());
+    }
 }
