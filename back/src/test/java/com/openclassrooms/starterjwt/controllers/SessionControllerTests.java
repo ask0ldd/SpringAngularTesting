@@ -1,6 +1,7 @@
 package com.openclassrooms.starterjwt.controllers;
 
 import com.openclassrooms.starterjwt.dto.SessionDto;
+import com.openclassrooms.starterjwt.exception.BadRequestException;
 import com.openclassrooms.starterjwt.mapper.SessionMapper;
 import com.openclassrooms.starterjwt.models.Session;
 import com.openclassrooms.starterjwt.models.Teacher;
@@ -9,6 +10,9 @@ import com.openclassrooms.starterjwt.services.SessionService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -23,15 +27,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
-@ExtendWith(SpringExtension.class)
-@SpringBootTest
+@ExtendWith(MockitoExtension.class)
 public class SessionControllerTests {
-    @Autowired
+    @InjectMocks
     SessionController sessionController;
-
-    @MockBean
+    @Mock
     SessionMapper sessionMapper;
-    @MockBean
+    @Mock
     SessionService sessionService;
 
     private final LocalDateTime localDateTime = LocalDateTime.of(2023, 5, 15, 10, 30, 0);
@@ -134,8 +136,6 @@ public class SessionControllerTests {
     @Test
     void testUpdateSession_invalidSessionId(){
         String invalidSessionId = "aaa";
-        when(sessionMapper.toEntity(any(SessionDto.class))).thenReturn(session1);
-        when(sessionService.update(any(), any(Session.class))).thenReturn(session1);
         ResponseEntity<?> response = sessionController.update(invalidSessionId, session1Dto);
         // assertThrows(NumberFormatException.class, () -> sessionController.update(invalidSessionId, session1Dto));
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
@@ -145,7 +145,7 @@ public class SessionControllerTests {
     @Test
     void testDeleteSession_success(){
         // Arrange
-        // no need to define sessionService.delete return value since void is expected
+        doNothing().when(sessionService).delete(anyLong());
         when(sessionService.getById(anyLong())).thenReturn(session1);
         // Act
         // error in original code : controller method called save instead of delete
@@ -171,7 +171,6 @@ public class SessionControllerTests {
     void testDeleteSession_whenInvalidSessionId() {
         // Arrange
         String invalidSessionId = "invalidSessionId";
-        when(sessionService.getById(any())).thenThrow(NumberFormatException.class);
         // Act
         ResponseEntity<?> response = sessionController.save(invalidSessionId);
         // Assert
@@ -181,6 +180,8 @@ public class SessionControllerTests {
 
     @Test
     void testPostParticipate_Success(){
+        // Arrange
+        doNothing().when(sessionService).participate(anyLong(), anyLong());
         // Act
         ResponseEntity<?> response = sessionController.participate(session1.getId().toString(), user1.getId().toString());
         // Assert
@@ -212,6 +213,8 @@ public class SessionControllerTests {
 
     @Test
     void testDeleteParticipate_Success(){
+        // Assert
+        doNothing().when(sessionService).noLongerParticipate(anyLong(), anyLong());
         // Act
         ResponseEntity<?> response = sessionController.noLongerParticipate(session1.getId().toString(), user1.getId().toString());
         // Assert
@@ -241,7 +244,7 @@ public class SessionControllerTests {
         verify(sessionService, never()).noLongerParticipate(anyLong(), anyLong());
     }
 
-    @Test
+    @Test // to fix cause numberformatexception shouldn't be thrown by the service
     void testNoLongerParticipate_Exception() {
         // Arrange
         String id = "invalidSessionId";
