@@ -1,17 +1,13 @@
 package com.openclassrooms.starterjwt.repository;
 
 import com.openclassrooms.starterjwt.models.Teacher;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.jdbc.EmbeddedDatabaseConnection;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -22,57 +18,52 @@ public class TeacherRepositoryTests {
 
     @Autowired
     private TeacherRepository teacherRepository;
-    // private final TeacherRepository teacherRepository;
-    private Teacher teacher1;
-    private Teacher teacher2;
 
-    String teacher1Fn = "John";
-    String teacher1Ln = "Doe";
-    String teacher2Fn = "Jane";
-    String teacher2Ln = "Doe";
+    private String teacher1Fn = "Margot";
+    private String teacher1Ln = "DELAHAYE";
+    private String teacher2Fn = "Helene";
+    private String teacher2Ln = "THIERCELIN";
 
-    /*public TeacherRepositoryTests(TeacherRepository teacherRepository){
-        this.teacherRepository = teacherRepository;
-    }*/
-
-    @BeforeEach
-    public void setup(){
-        teacher1 = Teacher.builder()
-                .firstName(teacher1Fn)
-                .lastName(teacher1Ln)
-                .build();
-
-        teacher2 = Teacher.builder()
-                .firstName(teacher2Fn)
-                .lastName(teacher2Ln)
-                .build();
+    @Test
+    void findById_ReturnOptionWithTeacher(){
+        // Act
+        Teacher teacher1 = teacherRepository.findById(1L).orElse(null);
+        // Assert
+        assertThat(teacher1).isNotNull();
+        assertThat(teacher1.getId()).isEqualTo(1L);
+        assertThat(teacher1.getFirstName()).isEqualTo(teacher1Fn);
+        assertThat(teacher1.getLastName()).isEqualTo(teacher1Ln);
     }
 
     @Test
-    public void givenTeacherObject_whenSave_thenReturnSavedEmployee(){
-
-        // when - action or the behaviour that we are going test
-        Teacher savedTeacher = teacherRepository.save(teacher1);
-
-        // then - verify the output
-        assertThat(savedTeacher).isNotNull();
-        assertThat(savedTeacher.getId()).isGreaterThan(0);
-        assertThat(savedTeacher.getFirstName()).isEqualTo(teacher1Fn);
-        assertThat(savedTeacher.getLastName()).isEqualTo(teacher1Ln);
+    void findById_TeacherDoesntExist_ReturnEmptyOptional(){
+        // Act
+        Optional<Teacher> teacher1 = teacherRepository.findById(3L);
+        // Assert
+        assertThat(teacher1.isEmpty()).isTrue();
     }
 
     @Test
-    public void givenTeachersObject_whenSave_thenReturnSavedEmployee(){
+    void findAll_TeacherExists_ReturnArrayOfTeachers(){
+        // Act
+        List<Teacher> teacherList = teacherRepository.findAll();
+        // Assert
+        assertThat(teacherList.get(0)).isNotNull();
+        assertThat(teacherList.get(0).getId()).isEqualTo(1L);
+        assertThat(teacherList.get(0).getFirstName()).isEqualTo(teacher1Fn);
+        assertThat(teacherList.get(0).getLastName()).isEqualTo(teacher1Ln);
+        assertThat(teacherList.get(1)).isNotNull();
+        assertThat(teacherList.get(1).getId()).isEqualTo(2L);
+        assertThat(teacherList.get(1).getFirstName()).isEqualTo(teacher2Fn);
+        assertThat(teacherList.get(1).getLastName()).isEqualTo(teacher2Ln);
+    }
 
-        // when - action or the behaviour that we are going test
-        Teacher savedTeacher = teacherRepository.save(teacher1);
-        Teacher savedTeacher2 = teacherRepository.save(teacher2);
-
-        // then - verify the output
-        assertThat(savedTeacher).isNotNull();
-        assertThat(savedTeacher2).isNotNull();
-        List<Teacher> teachersList = teacherRepository.findAll();
-        assertThat(teachersList).isNotNull();
-        assertThat(teachersList.size()).isEqualTo(4);
+    @Test
+    void findAll_TeachersDontExist_ReturnAnEmptyArray(){
+        // Act
+        teacherRepository.deleteAll();
+        List<Teacher> teacherList = teacherRepository.findAll();
+        // Assert
+        assertThat(teacherList.size()).isEqualTo(0);
     }
 }
