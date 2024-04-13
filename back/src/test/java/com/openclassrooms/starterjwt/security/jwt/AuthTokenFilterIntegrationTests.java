@@ -12,34 +12,32 @@ import org.springframework.mock.web.MockFilterChain;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.servlet.ServletException;
 import java.io.IOException;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
-@ExtendWith(SpringExtension.class) // allow autorwired + clean context after each test
+@ExtendWith(SpringExtension.class)
 @SpringBootTest
-public class AuthTokenFilterTests {
+@Sql(scripts = "classpath:sql/reset-database.sql")
+public class AuthTokenFilterIntegrationTests {
     @Autowired
     AuthTokenFilter authTokenFilter;
-    @MockBean
-    UserDetailsServiceImpl userDetailsService;
     @Autowired
-    JwtUtils jwtUtils;
+    UserDetailsServiceImpl userDetailsService;
     @MockBean
-    Authentication authentication;
+    JwtUtils jwtUtils;
 
-    private final User user1 = User.builder().id(1L).admin(false).email("user1@ced.com").firstName("user1Fn").lastName("user1Ln").password("aeazezeaeazeae").build();
+    private final User user1 = User.builder().id(1L).admin(false).email("yoga@studio.com").firstName("user1Fn").lastName("user1Ln").password("$2a$10$.Hsa/ZjUVaHqi0tp9xieMeewrnZxrZ5pQRzddUXE/WjDu2ZThe6Iq").build();
 
-    private UserDetailsImpl userDetails = new UserDetailsImpl(
+    private final UserDetailsImpl userDetails = new UserDetailsImpl(
             user1.getId(),
             user1.getEmail(),
             user1.getFirstName(),
@@ -49,16 +47,14 @@ public class AuthTokenFilterTests {
     );
 
     @Test
-    void testDoFilterInternal_ValidJwt() throws ServletException, IOException {
+    void testDoFilterInternalWithMockJwtUtils_ValidJwt() throws ServletException, IOException {
         // Arrange
-        // Obtain a valid JWT token
-        UserDetails userDetails = new UserDetailsImpl(user1.getId(), user1.getEmail(), user1.getFirstName(), user1.getLastName(), user1.isAdmin(), user1.getPassword());
-        when(userDetailsService.loadUserByUsername(anyString())).thenReturn(userDetails);
-        when(authentication.getPrincipal()).thenReturn(userDetails);
-        String jwtToken = jwtUtils.generateJwtToken(authentication);
-        // Create a new HttpServletRequest with the JWT token generated
+        // UserDetails principal = new UserDetailsImpl(user1.getId(), user1.getEmail(), user1.getFirstName(), user1.getLastName(), user1.isAdmin(), user1.getPassword());
+        when(jwtUtils.validateJwtToken(anyString())).thenReturn(true);
+        when(jwtUtils.getUserNameFromJwtToken(anyString())).thenReturn("yoga@studio.com");
+        // Create a new HttpServletRequest with a fake valid Jwt
         MockHttpServletRequest request = new MockHttpServletRequest();
-        request.addHeader("Authorization", "Bearer " + jwtToken);
+        request.addHeader("Authorization", "Bearer " + "JwtOverriddenByMockvalidateJwtToken");
         MockHttpServletResponse mockResponse = new MockHttpServletResponse();
         MockFilterChain mockFilterChain = new MockFilterChain();
         // Act
@@ -69,17 +65,20 @@ public class AuthTokenFilterTests {
     }
 
     @Test
-    void testDoFilterInternal_NoJwt() throws ServletException, IOException {
+    void testDoFilterInternalWithMockJwtUtils_InvalidJwt() throws ServletException, IOException {
         // Arrange
-        // Create a new HttpServletRequest with no jwt in the header
+        // UserDetails principal = new UserDetailsImpl(user1.getId(), user1.getEmail(), user1.getFirstName(), user1.getLastName(), user1.isAdmin(), user1.getPassword());
+        when(jwtUtils.validateJwtToken(anyString())).thenReturn(false);
+        // Create a new HttpServletRequest with a fake invalid Jwt
         MockHttpServletRequest request = new MockHttpServletRequest();
+        request.addHeader("Authorization", "Bearer " + "JwtOverriddenByMockvalidateJwtToken");
         MockHttpServletResponse mockResponse = new MockHttpServletResponse();
         MockFilterChain mockFilterChain = new MockFilterChain();
         // Act
-        // assertThrows(Exception.class, () -> authTokenFilter.doFilterInternal(request, mockResponse, mockFilterChain));
         authTokenFilter.doFilterInternal(request, mockResponse, mockFilterChain);
-        UserDetails updatedPrincipal = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        assertThat(updatedPrincipal.getUsername()).isNull();
+        // Assert
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        assertThat(authentication).isNull();
     }
 }
 
