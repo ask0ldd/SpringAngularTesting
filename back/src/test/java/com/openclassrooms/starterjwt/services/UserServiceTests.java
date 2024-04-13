@@ -32,7 +32,7 @@ public class UserServiceTests {
     private final User user1 = User.builder().id(1L).admin(true).email("ced@ced.com").firstName("john").lastName("doe").password("aeazezeaeazeae").build();
 
     @Test
-    void whenCallingFindById_AndRecevingAnOptionalContainingAUser_ShouldReturnAUser() {
+    void whenCallingFindById_AndReceivingAnOptionalContainingAUser_ShouldReturnAUser() {
         // Arrange
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(user1));
         // Act
@@ -46,7 +46,7 @@ public class UserServiceTests {
     }
 
     @Test
-    void whenCallingFindById_AndRecevingAnEmptyOptional_ShouldReturnNull() {
+    void whenCallingFindById_AndReceivingAnEmptyOptional_ShouldReturnNull() {
         // Arrange
         when(userRepository.findById(anyLong())).thenReturn(Optional.empty());
         // Act

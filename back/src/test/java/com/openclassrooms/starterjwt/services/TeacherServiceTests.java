@@ -29,7 +29,7 @@ public class TeacherServiceTests {
     private final Teacher teacher2 = Teacher.builder().id(2L).firstName("teacher2Fn").lastName("teacher2Ln").build();
 
     @Test
-    void whenCallingFindById_AndRecevingAnOptionalContainingATeacher_ShouldReturnATeacher() {
+    void whenCallingFindById_AndReceivingAnOptionalContainingATeacher_ShouldReturnATeacher() {
         // Arrange
         when(teacherRepository.findById(anyLong())).thenReturn(Optional.of(teacher1));
         // Act
