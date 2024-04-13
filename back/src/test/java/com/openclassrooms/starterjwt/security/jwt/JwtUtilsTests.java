@@ -20,7 +20,7 @@ import java.util.concurrent.TimeUnit;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Mockito.when;
 
-@ExtendWith(SpringExtension.class)
+@ExtendWith(SpringExtension.class) // needed jwtUtils.generateJwtToken needs access to the in context jwtSecret
 @SpringBootTest
 public class JwtUtilsTests {
     @Autowired
