@@ -113,7 +113,10 @@
 							com/openclassrooms/starterjwt/dto/*.*
 						</exclude>
 						<exclude>
-							com/openclassrooms/starterjwt/payload/*.*
+							com/openclassrooms/starterjwt/payload/request/*.*
+						</exclude>
+						<exclude>
+							com/openclassrooms/starterjwt/payload/response/*.*
 						</exclude>
 						<exclude>
 							com/openclassrooms/starterjwt/SpringBootSecurityJwtApplication.*
