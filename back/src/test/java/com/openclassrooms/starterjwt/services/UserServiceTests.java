@@ -2,23 +2,22 @@ package com.openclassrooms.starterjwt.services;
 
 import com.openclassrooms.starterjwt.models.User;
 import com.openclassrooms.starterjwt.repository.UserRepository;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
+
+// 3 Tests
 
 @ExtendWith(MockitoExtension.class)
 public class UserServiceTests {
@@ -27,12 +26,11 @@ public class UserServiceTests {
     @Mock
     private UserRepository userRepository;
 
-    // TODO : should bcrypt the password
-
     private final User user1 = User.builder().id(1L).admin(true).email("ced@ced.com").firstName("john").lastName("doe").password("aeazezeaeazeae").build();
 
     @Test
-    void whenCallingFindById_AndReceivingAnOptionalContainingAUser_ShouldReturnAUser() {
+    @DisplayName("When the user targeted by .findById() exists, said user should be returned")
+    void testFindbyId_TargetUserExists_ShouldReturnAUser() {
         // Arrange
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(user1));
         // Act
@@ -46,7 +44,8 @@ public class UserServiceTests {
     }
 
     @Test
-    void whenCallingFindById_AndReceivingAnEmptyOptional_ShouldReturnNull() {
+    @DisplayName("When the user targeted by .findById() doesnt exist, null should be returned")
+    void testFindbyId_TargetUserDoesntExist_ShouldReturnNull() {
         // Arrange
         when(userRepository.findById(anyLong())).thenReturn(Optional.empty());
         // Act
@@ -57,6 +56,7 @@ public class UserServiceTests {
     }
 
     @Test
+    @DisplayName("When .delete() is called with a userId, repo.deleteById() should be called")
     void whenCallingDelete_ShouldCallTheDeleteIdMethodOfTheUserRepo() {
         // Arrange
         // needs to use this syntax cause when(userRepository.deleteById(anyLong())).doNothing(); generates an IDE alert

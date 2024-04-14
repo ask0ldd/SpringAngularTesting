@@ -21,6 +21,8 @@ public class UserDetailsImplTests {
             user1.getPassword()
     );
 
+    // Those tests can be ignored. They don't bring much. Written for training purposes.
+
     @Test
     void testAllUserAccountProperties(){
         assertThat(userDetails.isAccountNonExpired()).isTrue();
@@ -42,9 +44,3 @@ public class UserDetailsImplTests {
     }
 
 }
-
-/*
-
-UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();
-
- */

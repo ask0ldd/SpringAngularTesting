@@ -2,6 +2,7 @@ package com.openclassrooms.starterjwt.services;
 
 import com.openclassrooms.starterjwt.models.Teacher;
 import com.openclassrooms.starterjwt.repository.TeacherRepository;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -18,6 +19,8 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 
+// 4 Tests
+
 @ExtendWith(MockitoExtension.class)
 public class TeacherServiceTests {
     @InjectMocks
@@ -29,7 +32,8 @@ public class TeacherServiceTests {
     private final Teacher teacher2 = Teacher.builder().id(2L).firstName("teacher2Fn").lastName("teacher2Ln").build();
 
     @Test
-    void whenCallingFindById_AndReceivingAnOptionalContainingATeacher_ShouldReturnATeacher() {
+    @DisplayName("When the teacher targeted by .findById() exists, said teacher should be returned")
+    void testGetbyId_TargetTeacherExists_ShouldReturnATeacher() {
         // Arrange
         when(teacherRepository.findById(anyLong())).thenReturn(Optional.of(teacher1));
         // Act
@@ -42,7 +46,8 @@ public class TeacherServiceTests {
     }
 
     @Test
-    void whenCallingFindById_AndRecevingAnEmptyOptional_ShouldReturnNull() {
+    @DisplayName("When the teacher targeted by .findById() doesnt exist, null should be returned")
+    void testGetbyId_TargetTeacherDoesntExist_ShouldReturnNull() {
         // Arrange
         when(teacherRepository.findById(anyLong())).thenReturn(Optional.empty());
         // Act
@@ -53,7 +58,8 @@ public class TeacherServiceTests {
     }
 
     @Test
-    void whenCallingFindAll_AndRecevingAListOfTeachers_ShouldReturnAListOfTeachers() {
+    @DisplayName("When .findall() is called and multiple teachers are returned by the repository, an array of teachers should be returned")
+    void testFindAll_MultipleTeachersExist_ShouldReturnAnArrayOfTeachers() {
         // Arrange
         when(teacherRepository.findAll()).thenReturn(Arrays.asList(teacher1, teacher2));
         // Act
@@ -65,6 +71,18 @@ public class TeacherServiceTests {
         assertThat(teachers.get(0).getLastName()).isEqualTo(teacher1.getLastName());
         assertThat(teachers.get(1).getFirstName()).isEqualTo(teacher2.getFirstName());
         assertThat(teachers.get(1).getLastName()).isEqualTo(teacher2.getLastName());
+    }
+
+    @Test
+    @DisplayName("When .findall() is called and no teacher is returned by the repository, an empty array should be returned")
+    void testFindAll_NoTeachersExist_ShouldAnEmptyArray() {
+        // Arrange
+        when(teacherRepository.findAll()).thenReturn(Arrays.asList());
+        // Act
+        List<Teacher> teachers = teacherService.findAll();
+        // Assert
+        assertThat(teachers.size()).isEqualTo(0);
+        verify(teacherRepository, times(1)).findAll();
     }
 
     // TODO : IllegalArgumentException for both

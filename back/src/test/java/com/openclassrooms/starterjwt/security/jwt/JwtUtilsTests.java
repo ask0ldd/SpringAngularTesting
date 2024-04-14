@@ -4,6 +4,7 @@ import com.openclassrooms.starterjwt.models.User;
 import com.openclassrooms.starterjwt.security.services.UserDetailsImpl;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +21,9 @@ import java.util.concurrent.TimeUnit;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Mockito.when;
 
-@ExtendWith(SpringExtension.class) // needed jwtUtils.generateJwtToken needs access to the in context jwtSecret
+// 7 Tests
+
+@ExtendWith(SpringExtension.class)
 @SpringBootTest
 public class JwtUtilsTests {
     @Autowired
@@ -35,6 +38,7 @@ public class JwtUtilsTests {
     private final User user1 = User.builder().id(1L).admin(true).email("ced@ced.com").firstName("john").lastName("doe").password("aeazezeaeazeae").build();
 
     @Test
+    @DisplayName("when the principal is filled with the right user datas, .generateJwtToken should return a valid token")
     void testGenerateJwtToken_Success(){
         UserDetails userDetails = new UserDetailsImpl(user1.getId(), user1.getEmail(), user1.getFirstName(), user1.getLastName(), user1.isAdmin(), user1.getPassword());
         when(authentication.getPrincipal()).thenReturn(userDetails);
@@ -46,6 +50,7 @@ public class JwtUtilsTests {
     }
 
     @Test
+    @DisplayName("when a valid jwt is passed, .validateJwtToken should return true")
     void testValidateJwt_ExpectTrueWhenJwtIsValid(){
         String validJwt = Jwts.builder()
             .setIssuer("self")
@@ -59,6 +64,7 @@ public class JwtUtilsTests {
     }
 
     @Test
+    @DisplayName("when a malformed jwt is passed, .validateJwtToken should return false")
     void testValidateJwt_ExpectFalseWhenJwtIsMalformed(){
         String malformedJwt = "InvalidJwt";
         Boolean validation = jwtUtils.validateJwtToken(malformedJwt);
@@ -66,6 +72,7 @@ public class JwtUtilsTests {
     }
 
     @Test
+    @DisplayName("when a jwt with an invalid signature is passed, .validateJwtToken should return false")
     void testValidateJwt_ExpectFalseWhenSignatureIsInvalid(){
         String falseSignatureJwt = Jwts.builder()
                 .setIssuer("self")
@@ -79,6 +86,7 @@ public class JwtUtilsTests {
     }
 
     @Test
+    @DisplayName("when an expired jwt is passed, .validateJwtToken should return false")
     void testValidateJwt_ExpectFalseWhenJwtIsExpired(){
         String expiredJwt = Jwts.builder()
             .setIssuer("self")
@@ -92,6 +100,7 @@ public class JwtUtilsTests {
     }
 
     @Test
+    @DisplayName("when an unsigned jwt is passed, .validateJwtToken should return false")
     void testValidateJwt_ExpectFalseWhenJwtIsUnsigned(){
         String unsignedJwt = Jwts.builder()
                 .setIssuer("self")
@@ -104,7 +113,8 @@ public class JwtUtilsTests {
     }
 
     @Test
-    void getUserNameFromJwt_Success(){
+    @DisplayName("when a valid jwt is passed, .getUserNameFromJwtToken should return a valid email")
+    void testGetUserNameFromJwt_Success(){
         String validJwt = Jwts.builder()
                 .setIssuer("self")
                 .setSubject(user1.getEmail())

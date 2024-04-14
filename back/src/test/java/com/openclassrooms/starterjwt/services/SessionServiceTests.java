@@ -21,6 +21,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 
+// 13 Tests
+
 @ExtendWith(MockitoExtension.class)
 public class SessionServiceTests {
     @InjectMocks
@@ -37,6 +39,8 @@ public class SessionServiceTests {
     private final Session session1 = Session.builder().id(1L).name("session1Name").description("session1Description").date(new Date()).teacher(teacher1).users(new ArrayList<>((Arrays.asList(user1, user2)))).build();
     private final Session session2 = Session.builder().id(2L).name("session2Name").description("session2Description").date(new Date()).teacher(teacher1).users(new ArrayList<>((Arrays.asList(user1, user2)))).build();
     private final Session sessionWithNoParticipant = Session.builder().id(1L).name("session1Name").description("session1Description").date(new Date()).teacher(teacher1).users(new ArrayList<>((Collections.emptyList()))).build();
+
+    // GetById
 
     @Test
     @DisplayName("When the session targeted by .getById() exists, said session should be returned")
@@ -65,6 +69,8 @@ public class SessionServiceTests {
         verify(sessionRepository, times(1)).findById(1L);
     }
 
+    // Create
+
     @Test
     @DisplayName("When a session is successfully created, said session should be returned")
     void testCreate_SessionCanBeCreated_ShouldReturnASession() {
@@ -82,8 +88,10 @@ public class SessionServiceTests {
         assertThat(session.getDate()).isEqualTo(session1.getDate());
     }
 
+    // FindAll
+
     @Test
-    @DisplayName("When multiple sessions are returned by the repository, an array of sessions should be returned")
+    @DisplayName("When findAll() is called and multiple sessions are returned by the repository, an array of sessions should be returned")
     void testFindAllMultipleSessionsExist_ShouldReturnAListOfSessions() {
         // Arrange
         when(sessionRepository.findAll()).thenReturn(Arrays.asList(session1, session2));
@@ -97,6 +105,10 @@ public class SessionServiceTests {
         assertThat(sessions.get(1).getName()).isEqualTo(session2.getName());
         assertThat(sessions.get(1).getDescription()).isEqualTo(session2.getDescription());
     }
+
+    // TODO : Empty array
+
+    // Update
 
     @Test
     @DisplayName("When a session is successfully updated, said session should be returned")
@@ -115,6 +127,8 @@ public class SessionServiceTests {
         assertThat(session.getDate()).isEqualTo(session1.getDate());
     }
 
+    // Delete
+
     @Test
     @DisplayName("When a session is deleted, sessionRepository.deleteById should be called")
     void testDelete_respositoryDeleteByIdShouldBeCalled() {
@@ -128,7 +142,8 @@ public class SessionServiceTests {
         verify(sessionRepository, times(1)).deleteById(1L);
     }
 
-    // participate
+    // Participate
+
     @Test
     @DisplayName("When a user sub to a yoga session, sessionRepository.save should be called")
     void testSubYogaSession_repositorySaveShouldBeCalled() {
@@ -162,13 +177,14 @@ public class SessionServiceTests {
     }
 
     @Test
-    void subscribingToAnUnknownTargetSession() {
+    @DisplayName("When a user sub to a non existent yoga session, sessionRepository.save shouldnt be called")
+    void testSubYogaSession_NonExistentSession_repositorySaveShouldntBeCalled() {
         // Arrange
         Long userId = 1L;
         Long sessionId = 1L;
         when(sessionRepository.findById(anyLong())).thenReturn(Optional.empty());
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(user1));
-        // Assert
+        // Act & Assert
         assertThrows(NotFoundException.class, () -> {
             sessionService.participate(sessionId, userId);
         });
@@ -177,13 +193,14 @@ public class SessionServiceTests {
     }
 
     @Test
-    void subscribingANonExistentUser() {
+    @DisplayName("When trying to sub a non existent user to a yoga session, sessionRepository.save shouldnt be called")
+    void testSubYogaSession_NonExistentUser_repositorySaveShouldntBeCalled() {
         // Arrange
         Long userId = 1L;
         Long sessionId = 1L;
         when(sessionRepository.findById(anyLong())).thenReturn(Optional.of(session1));
         when(userRepository.findById(anyLong())).thenReturn(Optional.empty());
-        // Assert
+        // Act & Assert
         assertThrows(NotFoundException.class, () -> {
             sessionService.participate(sessionId, userId);
         });
@@ -192,13 +209,14 @@ public class SessionServiceTests {
     }
 
     @Test
-    void subscribingToASession_alreadySubscribedUser() {
+    @DisplayName("When trying to sub an already subbed user, sessionRepository.save shouldnt be called")
+    void testSubYogaSession_AlreadySubUser_repositorySaveShouldntBeCalled() {
         // Arrange
         Long userId = 1L;
         Long sessionId = 1L;
         when(sessionRepository.findById(anyLong())).thenReturn(Optional.of(session1));
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(user1));
-        // Assert
+        // Act & Assert
         assertThrows(BadRequestException.class, () -> {
             sessionService.participate(sessionId, userId);
         });
@@ -206,9 +224,11 @@ public class SessionServiceTests {
         verify(sessionRepository, never()).save(any(Session.class));
     }
 
-    // unparticipate
+    // Unparticipate
+
     @Test
-    void unsubscribingFromASession_Success() {
+    @DisplayName("When a user unsub from a yoga session, sessionRepository.save should be called")
+    void testUnsubYogaSession_repositorySaveShouldBeCalled() {
         // Arrange
         Long userId = 1L;
         Long sessionId = 1L;
@@ -228,17 +248,19 @@ public class SessionServiceTests {
 
         // Act
         sessionService.noLongerParticipate(sessionId, userId);
+        // Assert
         verify(sessionRepository, times(1)).findById(anyLong());
         verify(sessionRepository, times(1)).save(expectedUpdatedSession);
     }
 
     @Test
-    void unsubscribingFromAnUnknownTargetSession() {
+    @DisplayName("When a user tries to unsub from a non existent yoga session, sessionRepository.save shouldnt be called")
+    void testUnsubYogaSession_UnknownSession_RepositorySaveShouldntBeCalled() {
         // Arrange
         Long userId = 1L;
         Long sessionId = 1L;
         when(sessionRepository.findById(anyLong())).thenReturn(Optional.empty());
-        // Assert
+        // Act & Assert
         assertThrows(NotFoundException.class, () -> {
             sessionService.noLongerParticipate(sessionId, userId);
         });
@@ -247,12 +269,13 @@ public class SessionServiceTests {
     }
 
     @Test
-    void unsubscribingFromASession_alreadyUnsubscribed() {
+    @DisplayName("When a user tries to unsub from a session he is not subbed to, sessionRepository.save shouldnt be called")
+    void testUnsubYogaSession_NotSubbedToTheSession_RepositorySaveShouldntBeCalled() {
         // Arrange
         Long userId = 1L;
         Long sessionId = 1L;
         when(sessionRepository.findById(anyLong())).thenReturn(Optional.of(sessionWithNoParticipant));
-        // Assert
+        // Act & Assert
         assertThrows(BadRequestException.class, () -> {
             sessionService.noLongerParticipate(sessionId, userId);
         });
