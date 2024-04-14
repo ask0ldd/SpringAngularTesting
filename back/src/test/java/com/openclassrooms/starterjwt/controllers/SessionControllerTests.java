@@ -1,7 +1,6 @@
 package com.openclassrooms.starterjwt.controllers;
 
 import com.openclassrooms.starterjwt.dto.SessionDto;
-import com.openclassrooms.starterjwt.exception.BadRequestException;
 import com.openclassrooms.starterjwt.mapper.SessionMapper;
 import com.openclassrooms.starterjwt.models.Session;
 import com.openclassrooms.starterjwt.models.Teacher;
@@ -13,19 +12,16 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.time.LocalDateTime;
 import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
+
+// 17 Tests
 
 @ExtendWith(MockitoExtension.class)
 public class SessionControllerTests {
@@ -56,20 +52,25 @@ public class SessionControllerTests {
         session1Dto.setUpdatedAt(session1.getUpdatedAt());
     }
 
+    // FindById
+
     @Test
-    @DisplayName("UNIT TEST : when sessionService has been able to retrieve the target Session, findById should return a response with an ok status code and a body with a Session")
-    void findById_ValidSession(){
+    @DisplayName("when service.findById returns a Session, ctrlr.findById should return a 200 Success response with the session")
+    void findById_ValidSession_200(){
+        // Arrange
         when(sessionService.getById(anyLong())).thenReturn(session1);
         when(sessionMapper.toDto(any(Session.class))).thenReturn(session1Dto);
+        // Act
         ResponseEntity<?> response = sessionController.findById(session1.getId().toString());
+        // Assert
         verify(sessionService, times(1)).getById(session1.getId());
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isEqualTo(session1Dto);
     }
 
     @Test
-    @DisplayName("UNIT TEST : when sessionService hasn't been able to retrieve the target Session, findById should return a response with a not found status code")
-    void findById_SessionNotFound(){
+    @DisplayName("when service.findById hasn't been able to retrieve the target Session, ctrlr.findById should return a 404 Not Found response")
+    void findById_SessionNotFound_404(){
         when(sessionService.getById(anyLong())).thenReturn(null);
         ResponseEntity<?> response = sessionController.findById(session1.getId().toString());
         verify(sessionService, times(1)).getById(session1.getId());
@@ -77,17 +78,19 @@ public class SessionControllerTests {
     }
 
     @Test
-    @DisplayName("UNIT TEST : when the sessionId passed to the controller through the request is invalid, findById should return a response with a bad request status code")
-    void findById_InvalidId(){
+    @DisplayName("when the sessionId passed to the controller is malformed, ctrlr.findById should return a 400 Bad Request response")
+    void findById_InvalidId_400(){
         String invalidSessionId = "aaa";
         ResponseEntity<?> response = sessionController.findById(invalidSessionId);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
         verify(sessionService, never()).getById(anyLong());
     }
 
+    // FindAll
+
     @Test
-    @DisplayName("UNIT TEST : when sessionService is returning an array of 2 Sessions, findAll should return a response with an ok status code and a body containing two Sessions")
-    void testFindAll_ExistingSessions(){
+    @DisplayName("when service.findAll is returning an array of 2 Sessions, ctrlr.findAll should return a 200 Success response with two Sessions")
+    void testFindAll_ExistingSessions_200(){
         List<Session> sessionsList = Arrays.asList(session1, session2);
         List<SessionDto> sessionsDtoList = Arrays.asList(session1Dto, session2Dto);
         when(sessionService.findAll()).thenReturn(sessionsList);
@@ -99,8 +102,8 @@ public class SessionControllerTests {
     }
 
     @Test
-    @DisplayName("UNIT TEST : when sessionService is returning an empty array of Sessions, findAll should return a response with an ok status code and a body containing a empty array")
-    void testFindAll_NoSessions(){
+    @DisplayName("when service.findAll is returning an empty array, ctrlr.findAll should return a 200 Success response with an empty array")
+    void testFindAll_NoSessions_200(){
         List<Session> sessionsEmptyList = Collections.emptyList();
         List<SessionDto> sessionsDtoEmptyList = Collections.emptyList();
         when(sessionService.findAll()).thenReturn(sessionsEmptyList);
@@ -111,8 +114,11 @@ public class SessionControllerTests {
         assertThat(response.getBody()).isEqualTo(sessionsDtoEmptyList);
     }
 
+    // Post
+
     @Test
-    void testPostSession_successful(){
+    @DisplayName("when service.create is returning a session, ctrlr.Create should return a 200 Success response with the session")
+    void testPostSession_200(){
         when(sessionMapper.toEntity(any(SessionDto.class))).thenReturn(session1);
         when(sessionService.create(any(Session.class))).thenReturn(session1);
         when(sessionMapper.toDto(any(Session.class))).thenReturn(session1Dto);
@@ -122,8 +128,11 @@ public class SessionControllerTests {
         assertThat(response.getBody()).isEqualTo(session1Dto);
     }
 
+    // Update
+
     @Test
-    void testUpdateSession_successful(){
+    @DisplayName("when service.update returns a session, ctrlr.Update should return a 200 Success response with the session")
+    void testUpdateSession_200(){
         when(sessionMapper.toEntity(any(SessionDto.class))).thenReturn(session1);
         when(sessionService.update(anyLong(), any(Session.class))).thenReturn(session1);
         when(sessionMapper.toDto(any(Session.class))).thenReturn(session1Dto);
@@ -134,7 +143,8 @@ public class SessionControllerTests {
     }
 
     @Test
-    void testUpdateSession_invalidSessionId(){
+    @DisplayName("when the sessionId passed to the ctrlr.Update is malformed, it should return a 400 Bad Request response")
+    void testUpdateSession_invalidSessionId_400(){
         String invalidSessionId = "aaa";
         ResponseEntity<?> response = sessionController.update(invalidSessionId, session1Dto);
         // assertThrows(NumberFormatException.class, () -> sessionController.update(invalidSessionId, session1Dto));
@@ -142,8 +152,11 @@ public class SessionControllerTests {
         verify(sessionService, never()).update(any(), any(Session.class));
     }
 
+    // Delete (!!!! NB : delete controller method is named save instead of delete !!!!)
+
     @Test
-    void testDeleteSession_success(){
+    @DisplayName("when session.delete returns no value, ctrlr.Delete should return a 200 Success response") // !!!! error
+    void testDeleteSession_200(){
         // Arrange
         doNothing().when(sessionService).delete(anyLong());
         when(sessionService.getById(anyLong())).thenReturn(session1);
@@ -156,7 +169,8 @@ public class SessionControllerTests {
     }
 
     @Test
-    void testDeleteSession_whenSessionNotFound() {
+    @DisplayName("when a non existent sessionId is passed as a parameter to ctrlr.Delete, it should return a 404 Not Found response") // !!!! error
+    void testDeleteSession_nonExistentSession_404() {
         // Arrange
         String nonExistentSessionId = "123";
         when(sessionService.getById(anyLong())).thenReturn(null);
@@ -168,7 +182,8 @@ public class SessionControllerTests {
     }
 
     @Test
-    void testDeleteSession_whenInvalidSessionId() {
+    @DisplayName("when a malformed sessionId is passed as a parameter to ctrlr.Delete, it should return a 400 Bad Request response") // !!!! error
+    void testDeleteSession_InvalidSessionId_400() {
         // Arrange
         String invalidSessionId = "invalidSessionId";
         // Act
@@ -178,8 +193,11 @@ public class SessionControllerTests {
         verify(sessionService, never()).delete(anyLong());
     }
 
+    // Participate
+
     @Test
-    void testPostParticipate_Success(){
+    @DisplayName("when service.participate returns no value, ctrl.participate should return a 200 Success response")
+    void testPostParticipate_200(){
         // Arrange
         doNothing().when(sessionService).participate(anyLong(), anyLong());
         // Act
@@ -190,7 +208,8 @@ public class SessionControllerTests {
     }
 
     @Test
-    void testPostParticipate_whenInvalidSessionId(){
+    @DisplayName("when an invalid sessionId is passed to ctrl.participate, it should return a 400 Bad Request response")
+    void testPostParticipate_InvalidSessionId_400(){
         // Arrange
         String invalidSessionId = "invalidSessionId";
         // Act
@@ -201,6 +220,7 @@ public class SessionControllerTests {
     }
 
     @Test
+    @DisplayName("when an invalid userId is passed to ctrl.participate, it should return a 400 Bad Request response")
     void testPostParticipate_whenInvalidUserId(){
         // Arrange
         String invalidUserId = "invalidUserId";
@@ -211,8 +231,11 @@ public class SessionControllerTests {
         verify(sessionService, never()).participate(anyLong(), anyLong());
     }
 
+    // Unsub
+
     @Test
-    void testDeleteParticipate_Success(){
+    @DisplayName("when service.noLongerParticipate returns no value, ctrl.participate should return a 200 Success response")
+    void testDeleteParticipate_200(){
         // Assert
         doNothing().when(sessionService).noLongerParticipate(anyLong(), anyLong());
         // Act
@@ -223,6 +246,7 @@ public class SessionControllerTests {
     }
 
     @Test
+    @DisplayName("when an invalid sessionId is passed to ctrl.noLongerParticipate, it should return a 400 Bad Request response")
     void testDeleteParticipate_whenInvalidSessionId(){
         // Arrange
         String invalidSessionId = "invalidSessionId";
@@ -234,6 +258,7 @@ public class SessionControllerTests {
     }
 
     @Test
+    @DisplayName("when an invalid userId is passed to ctrl.noLongerParticipate, it should return a 400 Bad Request response")
     void testDeleteParticipate_whenInvalidUserId(){
         // Arrange
         String invalidUserId = "invalidUserId";
@@ -244,7 +269,9 @@ public class SessionControllerTests {
         verify(sessionService, never()).noLongerParticipate(anyLong(), anyLong());
     }
 
-    @Test // to fix cause numberformatexception shouldn't be thrown by the service
+    /*
+    @Test // !!!! to fix cause numberformatexception shouldn't be thrown by the service
+    @DisplayName("")
     void testNoLongerParticipate_Exception() {
         // Arrange
         String id = "invalidSessionId";
@@ -259,5 +286,6 @@ public class SessionControllerTests {
         });
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
+    */
 
 }

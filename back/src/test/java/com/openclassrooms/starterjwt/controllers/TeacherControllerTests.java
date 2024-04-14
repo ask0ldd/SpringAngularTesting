@@ -21,6 +21,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 
+// 5 Tests
+
 @ExtendWith(MockitoExtension.class)
 public class TeacherControllerTests {
     @Mock
@@ -44,8 +46,10 @@ public class TeacherControllerTests {
         teacher2Dto.setId(teacher2.getId());
     }
 
+    // FindById
+
     @Test
-    @DisplayName("UNIT TEST : when teacherService has been able to retrieve the target Teacher, findById should return a response with an ok status code and a body with a Teacher")
+    @DisplayName("when service.findById returns a teacher, ctrlr.findById should return a 200 Success response with the teacher")
     void testFindById_ValidTeacher(){
         when(teacherService.findById(anyLong())).thenReturn(teacher1);
         when(teacherMapper.toDto(any(Teacher.class))).thenReturn(teacher1Dto);
@@ -56,8 +60,8 @@ public class TeacherControllerTests {
     }
 
     @Test
-    @DisplayName("UNIT TEST : when teacherService hasn't been able to retrieve the target Teacher, findById should return a response with a not found status code")
-    void testFindById_TeacherNotFound() {
+    @DisplayName("when service.findById hasn't been able to retrieve the target teacher, ctrlr.findById should return a 404 Not Found response")
+    void testFindById_TeacherNotFound_404() {
         when(teacherService.findById(anyLong())).thenReturn(null);
         ResponseEntity<?> response = teacherController.findById(teacher1.getId().toString());
         verify(teacherService, times(1)).findById(teacher1.getId());
@@ -65,7 +69,7 @@ public class TeacherControllerTests {
     }
 
     @Test
-    @DisplayName("UNIT TEST : when the teacherId passed to the controller through the request is invalid, findById should return a response with a bad request status code")
+    @DisplayName("when the teacherId passed to the controller is malformed, ctrlr.findById should return a 400 Bad Request response")
     void testFindById_InvalidTeacherId() {
         String invalidTeacherId = "aaa";
         ResponseEntity<?> response = teacherController.findById(invalidTeacherId);
@@ -73,8 +77,10 @@ public class TeacherControllerTests {
         verify(teacherService, never()).findById(anyLong());
     }
 
+    // FindAll
+
     @Test
-    @DisplayName("UNIT TEST : when teacherService is returning an array of 2 Teachers, findAll should return a response with an ok status code and a body containing two Teacher")
+    @DisplayName("when service.findAll is returning an array of 2 teachers, ctrlr.findAll should return a 200 Success response with two teachers")
     void testFindAll_ExistingTeachers(){
         List<Teacher> teachersList = Arrays.asList(teacher1, teacher2);
         List<TeacherDto> teachersDtoList = Arrays.asList(teacher1Dto, teacher2Dto);
@@ -87,7 +93,7 @@ public class TeacherControllerTests {
     }
 
     @Test
-    @DisplayName("UNIT TEST : when teacherService is returning an empty array of Teachers, findAll should return a response with an ok status code and a body containing a empty array")
+    @DisplayName("when service.findAll is returning an empty array, ctrlr.findAll should return a 200 Success response with an empty array")
     void testFindAll_NoTeachers(){
         List<Teacher> teachersEmptyList = Collections.emptyList();
         List<TeacherDto> teachersDtoEmptyList = Collections.emptyList();

@@ -30,8 +30,6 @@ public class SessionServiceTests {
     @Mock
     private UserRepository userRepository;
 
-    // TODO : should bcrypt the password
-
     private final User user1 = User.builder().id(1L).admin(false).email("user1@ced.com").firstName("user1Fn").lastName("user1Ln").password("aeazezeaeazeae").build();
     private final User user2 = User.builder().id(2L).admin(false).email("user2@ced.com").firstName("user2Fn").lastName("user2Ln").password("aeazezeaeazeae").build();
     private final User user3 = User.builder().id(3L).admin(false).email("user3@ced.com").firstName("user3Fn").lastName("user3Ln").password("aeazezeaeazeae").build();
@@ -41,8 +39,8 @@ public class SessionServiceTests {
     private final Session sessionWithNoParticipant = Session.builder().id(1L).name("session1Name").description("session1Description").date(new Date()).teacher(teacher1).users(new ArrayList<>((Collections.emptyList()))).build();
 
     @Test
-    @DisplayName("When the session targeted by .getById() exists, it should return the contained session")
-    void whenTheSessionTargetedByGetByIdExists_ShouldReturnASession() {
+    @DisplayName("When the session targeted by .getById() exists, said session should be returned")
+    void testGetbyId_TargetSessionExists_ShouldReturnASession() {
         // Arrange
         when(sessionRepository.findById(anyLong())).thenReturn(Optional.of(session1));
         // Act
@@ -56,8 +54,8 @@ public class SessionServiceTests {
     }
 
     @Test
-    @DisplayName("When the session targeted by .getById() doesn't exist, it should return the contained session")
-    void whenTheSessionTargetedByGetByIdDoesntExist_ShouldReturnNull() {
+    @DisplayName("When the session targeted by .getById() doesn't exist, null should be returned")
+    void testGetbyId_TargetSessionDoesntExist_ShouldReturnASession() {
         // Arrange
         when(sessionRepository.findById(anyLong())).thenReturn(Optional.empty());
         // Act
@@ -68,8 +66,8 @@ public class SessionServiceTests {
     }
 
     @Test
-    @DisplayName("When a session is successfully created, it should return the created session")
-    void whenASessionCanBeCreated_ShouldReturnASession() {
+    @DisplayName("When a session is successfully created, said session should be returned")
+    void testCreate_SessionCanBeCreated_ShouldReturnASession() {
         // Arrange
         when(sessionRepository.save(any(Session.class))).thenAnswer(invocation -> {
             return invocation.getArgument(0);
@@ -85,7 +83,8 @@ public class SessionServiceTests {
     }
 
     @Test
-    void whenCallingFindAll_AndRecevingAListOfSessions_ShouldReturnAListOfSessions() {
+    @DisplayName("When multiple sessions are returned by the repository, an array of sessions should be returned")
+    void testFindAllMultipleSessionsExist_ShouldReturnAListOfSessions() {
         // Arrange
         when(sessionRepository.findAll()).thenReturn(Arrays.asList(session1, session2));
         // Act
@@ -100,7 +99,8 @@ public class SessionServiceTests {
     }
 
     @Test
-    void whenSuccessfulUpdate() {
+    @DisplayName("When a session is successfully updated, said session should be returned")
+    void testUpdate_SessionCanBeUpdated_ShouldReturnASession() {
         // Arrange
         when(sessionRepository.save(any(Session.class))).thenAnswer(invocation -> {
             return invocation.getArgument(0);
@@ -116,9 +116,10 @@ public class SessionServiceTests {
     }
 
     @Test
-    void whenSuccessfulDelete() {
+    @DisplayName("When a session is deleted, sessionRepository.deleteById should be called")
+    void testDelete_respositoryDeleteByIdShouldBeCalled() {
         // Arrange
-        // needs to use this syntax cause when(userRepository.deleteById(anyLong())).doNothing(); generates an IDE alert
+        // when(userRepository.deleteById(anyLong())).doNothing(); generates an IDE alert so inverted syntax mandatory
         // when trying to mock methods returning void
         doNothing().when(sessionRepository).deleteById(anyLong());
         // Act
@@ -129,7 +130,8 @@ public class SessionServiceTests {
 
     // participate
     @Test
-    void whenRegisteringASuccessfulParticipation() {
+    @DisplayName("When a user sub to a yoga session, sessionRepository.save should be called")
+    void testSubYogaSession_repositorySaveShouldBeCalled() {
         // Arrange
         Long userId = 3L;
         Long sessionId = 1L;

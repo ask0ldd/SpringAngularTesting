@@ -5,6 +5,7 @@ import com.openclassrooms.starterjwt.mapper.UserMapper;
 import com.openclassrooms.starterjwt.models.User;
 import com.openclassrooms.starterjwt.security.services.UserDetailsImpl;
 import com.openclassrooms.starterjwt.services.UserService;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -19,6 +20,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 import org.mockito.Mock;
+
+// 7 Tests
 
 @ExtendWith(MockitoExtension.class)
 public class UserControllerTests {
@@ -42,9 +45,11 @@ public class UserControllerTests {
         userDto.setPassword(user1.getPassword());
     }
 
-    // FIND BY ID
+    // FindById
+
     @Test
-    void testFindById_ValidUser() {
+    @DisplayName("when service.findById returns a user, ctrlr.findById should return a 200 Success response with the user")
+    void testFindById_ValidUser_200() {
         // Arrange
         when(userService.findById(anyLong())).thenReturn(user1);
         when(userMapper.toDto(any(User.class))).thenReturn(userDto);
@@ -57,7 +62,8 @@ public class UserControllerTests {
     }
 
     @Test
-    void testFindById_UserNotFound() {
+    @DisplayName("when service.findById hasn't been able to retrieve the target user, ctrlr.findById should return a 404 Not Found response")
+    void testFindById_UserNotFound_404() {
         // Arrange
         when(userService.findById(anyLong())).thenReturn(null);
         // Act
@@ -68,7 +74,8 @@ public class UserControllerTests {
     }
 
     @Test
-    void testFindById_InvalidUserId() {
+    @DisplayName("when the userId passed to the controller is malformed, ctrlr.findById should return a 400 Bad Request response")
+    void testFindById_InvalidUserId_400() {
         // Arrange
         String invalidUserId = "abc";
         // Act
@@ -77,9 +84,11 @@ public class UserControllerTests {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
 
-    // DELETE
+    // Delete // !!! error method name in original code, save instead of delete !!!!
+
     @Test
-    void testDelete_ExistingUser(){
+    @DisplayName("when service.delete returns no value, ctrlr.delete(save) should return a 200 Success response")
+    void testDelete_ExistingUser_200(){
         // Arrange
         String userId = "1";
         UserDetails userDetails = UserDetailsImpl.builder()
@@ -104,7 +113,8 @@ public class UserControllerTests {
     }
 
     @Test
-    public void testDeleteUser_UserNotFound() {
+    @DisplayName("when the userId passed to the ctrlr doesnt exist, ctrlr.delete(save) should return a 404 Not Found response")
+    public void testDeleteUser_UserNotFound_400() {
         // Arrange
         String userId = "1";
         when(userService.findById(anyLong())).thenReturn(null);
@@ -115,6 +125,7 @@ public class UserControllerTests {
     }
 
     @Test
+    @DisplayName("when the userId passed is malformed, ctrlr.delete(save) should return a 400 Bad Request response")
     public void testDeleteUser_InvalidId() {
         // Arrange
         String userId = "invalid";
@@ -125,6 +136,7 @@ public class UserControllerTests {
     }
 
     @Test
+    @DisplayName("when the id of the user trying to delete doesnt match with the id of the owern of the account, ctrlr.delete(save) should return a 401 Unauthorized response")
     public void testDeleteUser_TheLoggedUserIsTryingToDeleteAnotherUserProfile() {
         // Arrange
         // user1 as Principal
