@@ -45,19 +45,9 @@ const validRegistration = {
   password : "validPassword"
 }
 
-const registrationWithInvalidEmail = {
-  firstname : "firstname",
-  lastname : "lastname",
-  email : "invalidemail",
-  password : "validPassword"
-}
+const registrationWithInvalidEmail = {...validRegistration, email : "invalidemail"}
 
-const registrationWithShortPassword = {
-  firstname : "firstname",
-  lastname : "lastname",
-  email : "validemail@validemail.com",
-  password : "pswd"
-}
+const registrationWithShortPassword = {...validRegistration, password : "pswd"}
 
 // if credentials are email@email.com / validpassword : broadcast sessionInformation
 // if anything else : throwError
@@ -118,6 +108,10 @@ describe('RegisterComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  // ------
+  // All the expected elements are display by default / Integration Test
+  // ------
+
   it('should render the register title, the fields and the an inactive submit button', () => {
     // Assert
     expect(fixture.debugElement.query(By.css('mat-card-title')).nativeElement.textContent).toBe("Register")
@@ -138,6 +132,10 @@ describe('RegisterComponent', () => {
     expect((submitButton as HTMLButtonElement).disabled).toBeTruthy()
   })
 
+  // ------
+  // Invalid email -> Submit button is inactive / Integration Test
+  // ------
+
   describe('when the form contains three valid fields & an invalid email',() => {
     it('should display an inactive submit button', () => {
       // Arrange
@@ -156,6 +154,10 @@ describe('RegisterComponent', () => {
     })
   })
 
+  // ------
+  // Valid datas within the form -> Submit button is active / Integration Test
+  // ------
+
   describe('when the form contains only valid fields',() => {
     it('should display an active submit button', () => {
       // Arrange
@@ -173,6 +175,10 @@ describe('RegisterComponent', () => {
       expect((submitButton as HTMLButtonElement).disabled).toBeFalsy()
     })
   })
+
+  // ------
+  // Invalid registration datas submitted / Integration Test
+  // ------
 
   describe('when invalid datas are submitted',() => {
     it('should display an error message', () => {
@@ -196,6 +202,10 @@ describe('RegisterComponent', () => {
       expect(fixture.debugElement.queryAll(By.css('.error'))).toBeTruthy()
     })
   })
+
+  // ------
+  // Valid registration datas submitted / Integration Test
+  // ------
 
   describe('when valid datas are submitted',() => {
     it('should navigate to the login page', () => {

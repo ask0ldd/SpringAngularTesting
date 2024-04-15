@@ -151,7 +151,7 @@ describe('FormComponent', () => {
   // !!!! fix : need a real inject router /  Unit Test
 
   // --------
-  // Back Button
+  // Back Button / Integration Test
   // --------
 
   describe('when clicking on the back button', () => {
@@ -183,7 +183,7 @@ describe('FormComponent', () => {
   })
 
   // --------
-  // Create a new Yoga Session
+  // Create a new Yoga Session / Integration Test
   // --------
 
   describe('when connected as an admin and the form is fully filled', () => {
@@ -235,16 +235,12 @@ describe('FormComponent', () => {
 
   describe('when connected as an admin', () => {
 
-    // let mockStrIncludes : jest.Mock<boolean, []>
-
     beforeAll(() => {
-      // makes "url.includes('update')"" return true
-      // mockStrIncludes = String.prototype.includes = jest.fn(() => true)
       routerMock.url = "update"
     })
 
     // --------
-    // Edit a Yoga Session
+    // Edit a Yoga Session / Integration Test
     // --------
 
     it('should be possible to succesfully edit a yoga session with a snackbar', async () => {
@@ -259,7 +255,6 @@ describe('FormComponent', () => {
       expect(nameInput.nativeElement.value).toBe(yogaSession.name)
       expect(descriptionTextarea.nativeElement.value).toBe(yogaSession.description)
       expect(dateInput.nativeElement.value).toBe(new Date().toISOString().slice(0, 10))
-      // expect(component.id).toBe(1)
 
       nameInput.triggerEventHandler('input', { target: { value: "yoga session name"}})
       dateInput.triggerEventHandler('input', { target: { value: "04/04/2024"}})
@@ -284,7 +279,6 @@ describe('FormComponent', () => {
       expect(routerMock.navigate).toHaveBeenCalledWith(['sessions'])
     })
 
-    // afterAll(() => { mockStrIncludes.mockRestore() })
   })
 
   describe('when connected as a base user', () => {

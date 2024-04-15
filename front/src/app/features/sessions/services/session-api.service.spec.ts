@@ -50,7 +50,7 @@ describe('SessionsService', () => {
   });
 
   // --------
-  // Requesting All Yoga Sessions
+  // Requesting All Yoga Sessions / Unit Test
   // --------
 
   describe('when the all method is called', () => {
@@ -72,7 +72,7 @@ describe('SessionsService', () => {
   })
 
   // --------
-  // Unit Test : Requestion the Yoga Session Details
+  // Requestion the Yoga Session Details / Unit Test
   // --------
 
   describe('when the detail method is called', () => {
@@ -95,7 +95,7 @@ describe('SessionsService', () => {
   })
 
   // --------
-  // Unit Test : Delete a Yoga Session
+  // Delete a Yoga Session / Unit Test
   // --------
 
   describe('when the delete method is called', () => {
@@ -118,7 +118,7 @@ describe('SessionsService', () => {
   })
 
   // --------
-  // Unit Test : Create a Yoga Session
+  // Create a Yoga Session / Unit Test
   // --------
 
   describe('when the create method is called with a session passed', () => {
@@ -140,7 +140,7 @@ describe('SessionsService', () => {
   })
 
   // --------
-  // Unit Test : Update a Yoga Session
+  // Update a Yoga Session / Unit Test
   // --------
 
   describe('when the update method is called', () => {
@@ -163,7 +163,7 @@ describe('SessionsService', () => {
   })
 
   // --------
-  // Unit Test : Participate to a Yoga Session
+  // Participate to a Yoga Session / Unit Test
   // --------
 
   describe('when the participate method is called', () => {
@@ -187,7 +187,7 @@ describe('SessionsService', () => {
   })
 
   // --------
-  // Unit Test : Unsub from a Yoga Session
+  // Unsub from a Yoga Session / Unit Test
   // --------
 
   describe('when the unparticipate method is called', () => {

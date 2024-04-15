@@ -23,17 +23,26 @@ const mockSessionService = {
   logOut : jest.fn()
 }
 
+const mockSessionServiceAdmin = {...mockSessionService, sessionInformation : { admin : true, id : 1}}
+
+const userDetails = {
+  id: 1,
+  email: 'email@email.com',
+  lastName: 'lastname',
+  firstName: 'firstname',
+  admin: false,
+  password: 'password',
+  createdAt: new Date(),
+  updatedAt: new Date(),
+}
+
 const mockUserService = {
-  getById : (id : string) => of({
-    id: 1,
-    email: 'email@email.com',
-    lastName: 'lastname',
-    firstName: 'firstname',
-    admin: false,
-    password: 'password',
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  }),
+  getById : (id : string) => of(userDetails),
+  delete : jest.fn((id) => of(void 0))
+}
+
+const mockUserServiceAdmin = {
+  getById : (id : string) => of({...userDetails, admin : true}),
   delete : jest.fn((id) => of(void 0))
 }
 
@@ -79,7 +88,10 @@ describe('MeComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  // Unit Test
+  // --------
+  // Back button / Integration Test
+  // --------
+
   it('should go back in history when clicking on the back button', () => {
     // Arrange
     const windowHistorySpy = jest.spyOn(window.history, 'back')
@@ -90,8 +102,12 @@ describe('MeComponent', () => {
     expect(windowHistorySpy).toHaveBeenCalled()
   })
 
+  // --------
+  // Delete button displayed as a base User / Integration Test
+  // --------
+
   describe('if i click on the delete button', () => {
-    it('should try to delete my account, display a related message into a snackbar, logout and redirect me to the homepage', () => {
+    it('should display a related message into a snackbar, logout and redirect me to the homepage when i try to delete my account', () => {
       // Arrange
       const deleteAccountButton = fixture.debugElement.query(By.css('button[color="warn"]'))
       // Act
@@ -104,4 +120,49 @@ describe('MeComponent', () => {
     })
   })
 
-});
+})
+
+// --------
+// Delete button not displayed as an Admin / Integration Test
+// --------
+
+describe('When logged as an admin', () => {
+  let component: MeComponent;
+  let fixture: ComponentFixture<MeComponent>;
+  
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      declarations: [MeComponent],
+      imports: [
+        MatSnackBarModule,
+        HttpClientModule,
+        MatCardModule,
+        MatFormFieldModule,
+        MatIconModule,
+        MatInputModule
+      ],
+      providers: [
+        { provide: SessionService, useValue: mockSessionServiceAdmin },
+        { provide: UserService, useValue: mockUserServiceAdmin },
+        { provide: MatSnackBar, useValue : snackBarMock },
+        { provide: Router, useValue: routerMock },
+      ],
+    })
+      .compileComponents();
+
+    fixture = TestBed.createComponent(MeComponent)
+    component = fixture.componentInstance
+    fixture.detectChanges()
+    jest.clearAllMocks()
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+
+  it('shouldnt display any delete account button', () => {
+    const deleteAccountButton = fixture.debugElement.query(By.css('button[color="warn"]'))
+    // Assert
+    expect(deleteAccountButton).toBeNull();
+  })
+})

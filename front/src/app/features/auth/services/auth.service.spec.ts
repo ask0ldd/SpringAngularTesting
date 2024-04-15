@@ -49,7 +49,7 @@ describe('AuthService', () => {
   });
 
   // --------
-  // Unit Test : Register A New User
+  // Register A New User / Unit Test
   // --------
 
   describe('when the register method receives a registerRequest obj', () => {
@@ -76,7 +76,7 @@ describe('AuthService', () => {
   })
 
   // --------
-  // Unit Test : Login A New User
+  // Login A New User / Unit Test
   // --------
 
   describe('when login method receives a loginRequest obj', () => {

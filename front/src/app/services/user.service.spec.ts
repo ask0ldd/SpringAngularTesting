@@ -39,7 +39,7 @@ describe('UserService', () => {
   });
 
   // --------
-  // Unit Test : Retrieve one User
+  // Retrieve one User / Unit Test
   // --------
 
   describe('when the getById is called with a user id passed to it', () => {
@@ -60,7 +60,7 @@ describe('UserService', () => {
   })
 
   // --------
-  // Unit Test : Delete A Target User
+  // Delete A Target User / Unit Test
   // --------
 
   describe('when the delete method is called with an id passed to it', () => {

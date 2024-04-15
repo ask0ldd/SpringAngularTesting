@@ -73,7 +73,7 @@ describe('AppComponent', () => {
   });
 
   // --------
-  // User not Logged -> Login & Register links in Header
+  // User not Logged -> Login & Register links in Header / Integration Test
   // --------
 
   describe('when the user is not logged', () => {
@@ -86,7 +86,7 @@ describe('AppComponent', () => {
     });
 
     // --------
-    // Clicking on Login
+    // Clicking on Login / Integration Test
     // --------
 
     describe('when the login button is clicked', () => {
@@ -103,7 +103,7 @@ describe('AppComponent', () => {
     })
 
     // --------
-    // Clicking on Register
+    // Clicking on Register / Integration Test
     // --------  
 
     describe('and the register button is clicked', () => {
@@ -128,7 +128,7 @@ describe('AppComponent', () => {
     beforeEach(() => jest.clearAllMocks())
 
     // --------
-    // Logged -> Account / Me & Sessions Links in Header
+    // Logged -> Account | Me & Sessions Links in Header / Integration Test
     // --------
 
     it('should display a sessions link and a account link', () => {
@@ -140,7 +140,7 @@ describe('AppComponent', () => {
     });
 
     // --------
-    // Clicking on Logout
+    // Clicking on Logout / Integration Test
     // --------
 
     describe('and the logout button is clicked', () => {
@@ -158,7 +158,7 @@ describe('AppComponent', () => {
     })
 
     // --------
-    // Clicking on the Session Link
+    // Clicking on the Session Link / Integration Test
     // --------
 
     describe('and the session button is clicked', () => {
@@ -175,7 +175,7 @@ describe('AppComponent', () => {
     })
 
     // --------
-    // Clicking on Account / Me
+    // Clicking on Account | Me / Integration Test
     // --------
 
     describe('and the account button is clicked', () => {

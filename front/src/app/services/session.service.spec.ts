@@ -39,7 +39,7 @@ describe('SessionService', () => {
   });
 
   // --------
-  // $logged broadcasting False by default
+  // $logged broadcasting False by default / Unit Test
   // --------
 
   describe('when isLogged = false', () => {
@@ -53,7 +53,7 @@ describe('SessionService', () => {
   })
 
   // --------
-  // Unit Test : Login
+  // Login / Unit Test
   // --------
 
   describe('when the logIn method is called', () => {
@@ -72,7 +72,7 @@ describe('SessionService', () => {
   })
 
   // --------
-  // Unit Test : Logout
+  // Logout / Unit Test
   // --------
 
   describe('when the logOut is called', () => {

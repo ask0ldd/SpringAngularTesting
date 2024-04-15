@@ -91,7 +91,7 @@ describe('LoginComponent', () => {
   })
 
   // --------
-  // All the default elements should be displayed
+  // All the default elements should be displayed / Integration Test
   // --------
 
   it('should render the login title, the fields and the an inactive submit button', () => {
@@ -113,7 +113,7 @@ describe('LoginComponent', () => {
   })
 
   // --------
-  // Invalid Email => Inactive Submit Button
+  // Invalid Email => Inactive Submit Button / Integration Test
   // --------
 
   describe('when the form contains a valid password but an invalid email',() => {
@@ -133,7 +133,7 @@ describe('LoginComponent', () => {
   })
 
   // --------
-  // Valid Password & Email => Active Submit Button
+  // Valid Password & Email => Active Submit Button / Integration Test
   // --------
 
   describe('when the form contains a valid password and a valid email',() => {
@@ -153,7 +153,7 @@ describe('LoginComponent', () => {
   })
 
   // --------
-  // Wrong Credentials submitted
+  // Wrong Credentials submitted / Integration Test
   // --------
 
   describe('when the wrong credentials are submitted',() => {
@@ -177,7 +177,7 @@ describe('LoginComponent', () => {
   })
 
   // --------
-  // Valid Credentials submitted
+  // Valid Credentials submitted / Integration Test
   // --------
 
   describe('when valid credentials are submitted',() => {

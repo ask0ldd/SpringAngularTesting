@@ -43,7 +43,7 @@ describe('TeacherService', () => {
   });
 
   // --------
-  // Unit Test : Get All Teachers
+  // Get all Teachers / Unit Test
   // --------
 
   describe('when the all method is called', () => {
@@ -63,7 +63,7 @@ describe('TeacherService', () => {
   })
 
   // --------
-  // Unit Test : Get some teachers details
+  // Get some teachers details / Unit Test
   // --------
 
   describe('when the detail method is called with a teacher id passed to it', () => {

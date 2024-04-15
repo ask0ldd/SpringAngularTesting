@@ -136,7 +136,7 @@ describe('DetailComponent', () => {
     })
 
     // --------
-    // All the datas from the session are displayed
+    // All the datas from the session are displayed / Integration Test
     // --------
 
     it('should display all the sessions datas', () => {
@@ -155,7 +155,7 @@ describe('DetailComponent', () => {
     })
 
     // --------
-    // Back button
+    // Back button / Integration Test
     // --------
 
     it('should go back in history when clicking on the back button', () => {
@@ -169,7 +169,7 @@ describe('DetailComponent', () => {
     })
 
     // --------
-    // Participate button
+    // Participate button / Integration Test
     // --------
 
     describe('as a non participant to the session', () => {
@@ -194,7 +194,7 @@ describe('DetailComponent', () => {
     })
 
     // --------
-    // Unparticipate button
+    // Unparticipate button / Integration Test
     // --------
 
     describe('as a participant to the session', () => {
@@ -283,7 +283,7 @@ describe('DetailComponent', () => {
     })
 
     // --------
-    // Delete button
+    // Delete button / Integration Test
     // --------
     
     it('should display a delete button which should be calling sessionAPIservice.delete()', () => {

@@ -75,7 +75,6 @@ describe('ListComponent', () => {
     all : jest.fn()
   }
 
-  // Unit Test
   describe('when the component is initialized', () => {
 
     beforeAll(async () => {
@@ -96,7 +95,10 @@ describe('ListComponent', () => {
     });
   })
 
-  // Integration Test
+  // --------
+  // An empty array leads to no Sessions being displayed / Integration Test
+  // --------
+
   describe('when an empty array is broadcasted by the .all() method of the sessionAPIService', () => {
     
     beforeEach(async () => {
@@ -109,8 +111,7 @@ describe('ListComponent', () => {
           { provide: SessionService, useValue: mockSessionService }, 
           { provide: SessionApiService, useValue: mockSessionAPIService }
         ]
-      })
-        .compileComponents();
+      }).compileComponents();
 
       fixture = TestBed.createComponent(ListComponent);
       component = fixture.componentInstance;
@@ -125,8 +126,12 @@ describe('ListComponent', () => {
     })
   })
 
-  // Integration Test
+  // --------
+  // An array of 2 Sessions leads to 2 Sessions being displayed / Integration Test
+  // --------
+
   describe('when an array of two sessions is broadcasted by the .all() method of the sessionAPIService', () => {
+
     beforeEach(async () => {
       // for the following tests mockSessionAPIService.all returns an observable that will broadcast an array of two sessions
       mockSessionAPIService.all = jest.fn(() => of([{...session1}, {...session2}]))
@@ -137,8 +142,7 @@ describe('ListComponent', () => {
           { provide: SessionService, useValue: mockSessionService }, 
           { provide: SessionApiService, useValue: mockSessionAPIService },
         ]
-      })
-        .compileComponents();
+      }).compileComponents();
 
       fixture = TestBed.createComponent(ListComponent);
       router = TestBed.inject(Router) as Router
@@ -172,6 +176,33 @@ describe('ListComponent', () => {
       const createButton = fixture.debugElement.query(By.css('button[routerlink="create"]'))
       expect(createButton).toBeTruthy()
     })
+  })
+
+  describe('when logged as an admin', () => {
+
+    beforeEach(async () => {
+      // for the following tests mockSessionAPIService.all returns an observable that will broadcast an array of two sessions
+      mockSessionAPIService.all = jest.fn(() => of([{...session1}, {...session2}]))
+      await TestBed.configureTestingModule({
+        declarations: [ListComponent],
+        imports: [RouterTestingModule, HttpClientModule, MatCardModule, MatIconModule],
+        providers: [
+          { provide: SessionService, useValue: mockSessionService }, 
+          { provide: SessionApiService, useValue: mockSessionAPIService },
+        ]
+      }).compileComponents();
+
+      fixture = TestBed.createComponent(ListComponent);
+      router = TestBed.inject(Router) as Router
+      ngZone = TestBed.inject(NgZone)
+      component = fixture.componentInstance
+      fixture.detectChanges()
+      jest.restoreAllMocks()
+    });
+
+    // --------
+    // When logged as an admin, the create session button should be displayed and functional / Integration Test
+    // --------
 
     describe('when clicking on the create button', () => {
       it('should navigate to the new session form page', () => {
@@ -186,6 +217,10 @@ describe('ListComponent', () => {
         expect(router.navigateByUrl).toHaveBeenCalledWith(router.parseUrl('create'), {"replaceUrl": false, "skipLocationChange": false, "state": undefined})
       })
     })
+
+    // --------
+    // The details button should be displayed and functional / Integration Test
+    // --------
 
     describe('when clicking on the detail button', () => {
       it('should navigate to the detail page', () => {
@@ -202,6 +237,10 @@ describe('ListComponent', () => {
       })
     })
 
+    // --------
+    // When logged as an admin, the edit button should be displayed and functional / Integration Test
+    // --------
+
     describe('when clicking on the edit button', () => {
       it('should navigate to the edit form page', () => {
         jest.spyOn(router, 'navigateByUrl')
@@ -217,14 +256,20 @@ describe('ListComponent', () => {
       })
     })
 
-    // Unit Test
+    // --------
+    // Component.user should return the users session informations / Unit Test
+    // --------
+
     describe('the component user getter', () => {
       it('should return the sessionInformations', () => {
         expect(JSON.stringify(component.user)).toBe(JSON.stringify(mockSessionInformation))
       })
     })
 
-    // Unit Test
+    // --------
+    // After init, $session should broadcast 2 sessions / Unit Test
+    // --------
+
     describe('once the component initialized', () => {
       beforeAll(() => {
         mockSessionAPIService.all = jest.fn(() => of([{...session1}, {...session2}]))
