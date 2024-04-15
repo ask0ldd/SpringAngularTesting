@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 
-// 13 Tests
+// 14 Tests
 
 @ExtendWith(MockitoExtension.class)
 public class SessionServiceTests {
@@ -40,7 +40,9 @@ public class SessionServiceTests {
     private final Session session2 = Session.builder().id(2L).name("session2Name").description("session2Description").date(new Date()).teacher(teacher1).users(new ArrayList<>((Arrays.asList(user1, user2)))).build();
     private final Session sessionWithNoParticipant = Session.builder().id(1L).name("session1Name").description("session1Description").date(new Date()).teacher(teacher1).users(new ArrayList<>((Collections.emptyList()))).build();
 
+    // -------
     // GetById
+    // -------
 
     @Test
     @DisplayName("When the session targeted by .getById() exists, said session should be returned")
@@ -49,7 +51,7 @@ public class SessionServiceTests {
         when(sessionRepository.findById(anyLong())).thenReturn(Optional.of(session1));
         // Act
         Session session = sessionService.getById(1L);
-        // Assert
+        // Assert : service.getById should return the expected session
         assertNotNull(session);
         verify(sessionRepository, times(1)).findById(1L);
         assertThat(session.getName()).isEqualTo(session1.getName());
@@ -64,12 +66,14 @@ public class SessionServiceTests {
         when(sessionRepository.findById(anyLong())).thenReturn(Optional.empty());
         // Act
         Session session = sessionService.getById(1L);
-        // Assert
+        // Assert : Expect Null
         assertNull(session);
         verify(sessionRepository, times(1)).findById(1L);
     }
 
+    // -------
     // Create
+    // -------
 
     @Test
     @DisplayName("When a session is successfully created, said session should be returned")
@@ -80,7 +84,7 @@ public class SessionServiceTests {
         });
         // Act
         Session session = sessionService.create(session1);
-        // Assert
+        // Assert : service.create should return the expected session
         assertNotNull(session);
         verify(sessionRepository, times(1)).save(session1);
         assertThat(session.getName()).isEqualTo(session1.getName());
@@ -88,16 +92,18 @@ public class SessionServiceTests {
         assertThat(session.getDate()).isEqualTo(session1.getDate());
     }
 
+    // -------
     // FindAll
+    // -------
 
     @Test
     @DisplayName("When findAll() is called and multiple sessions are returned by the repository, an array of sessions should be returned")
-    void testFindAllMultipleSessionsExist_ShouldReturnAListOfSessions() {
+    void testFindAll_MultipleSessionsExist_ShouldReturnAListOfSessions() {
         // Arrange
         when(sessionRepository.findAll()).thenReturn(Arrays.asList(session1, session2));
         // Act
         List<Session> sessions = sessionService.findAll();
-        // Assert
+        // Assert : Expect an Array with Two elements
         assertThat(sessions.size()).isEqualTo(2);
         verify(sessionRepository, times(1)).findAll();
         assertThat(sessions.get(0).getName()).isEqualTo(session1.getName());
@@ -106,9 +112,21 @@ public class SessionServiceTests {
         assertThat(sessions.get(1).getDescription()).isEqualTo(session2.getDescription());
     }
 
-    // TODO : Empty array
+    @Test
+    @DisplayName("When findAll() is called and no session is returned by the repository, an empty array should be returned")
+    void testFindAll_NoSessionExists_ShouldReturnAnEmptyArray() {
+        // Arrange
+        when(sessionRepository.findAll()).thenReturn(Arrays.asList());
+        // Act
+        List<Session> sessions = sessionService.findAll();
+        // Assert : Expect an empty Array
+        assertThat(sessions.size()).isEqualTo(0);
+        verify(sessionRepository, times(1)).findAll();
+    }
 
+    // -------
     // Update
+    // -------
 
     @Test
     @DisplayName("When a session is successfully updated, said session should be returned")
@@ -119,7 +137,7 @@ public class SessionServiceTests {
         });
         // Act
         Session session = sessionService.update(1L, session1);
-        // Assert
+        // Assert : service.update should return the expected session
         assertNotNull(session);
         verify(sessionRepository, times(1)).save(session1);
         assertThat(session.getName()).isEqualTo(session1.getName());
@@ -127,14 +145,16 @@ public class SessionServiceTests {
         assertThat(session.getDate()).isEqualTo(session1.getDate());
     }
 
+    // -------
     // Delete
+    // -------
 
     @Test
     @DisplayName("When a session is deleted, sessionRepository.deleteById should be called")
     void testDelete_respositoryDeleteByIdShouldBeCalled() {
         // Arrange
         // when(userRepository.deleteById(anyLong())).doNothing(); generates an IDE alert so inverted syntax mandatory
-        // when trying to mock methods returning void
+        // used when trying to mock methods returning void
         doNothing().when(sessionRepository).deleteById(anyLong());
         // Act
         sessionService.delete(1L);
@@ -142,7 +162,9 @@ public class SessionServiceTests {
         verify(sessionRepository, times(1)).deleteById(1L);
     }
 
+    // -------
     // Participate
+    // -------
 
     @Test
     @DisplayName("When a user sub to a yoga session, sessionRepository.save should be called")
@@ -184,7 +206,8 @@ public class SessionServiceTests {
         Long sessionId = 1L;
         when(sessionRepository.findById(anyLong())).thenReturn(Optional.empty());
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(user1));
-        // Act & Assert
+
+        // Act & Assert : Trying to add a user to a non existent session -> NotFoundException
         assertThrows(NotFoundException.class, () -> {
             sessionService.participate(sessionId, userId);
         });
@@ -193,14 +216,15 @@ public class SessionServiceTests {
     }
 
     @Test
-    @DisplayName("When trying to sub a non existent user to a yoga session, sessionRepository.save shouldnt be called")
+    @DisplayName("When trying to sub a non existent user to a yoga session, a NotFoundException should be thrown")
     void testSubYogaSession_NonExistentUser_repositorySaveShouldntBeCalled() {
         // Arrange
         Long userId = 1L;
         Long sessionId = 1L;
         when(sessionRepository.findById(anyLong())).thenReturn(Optional.of(session1));
         when(userRepository.findById(anyLong())).thenReturn(Optional.empty());
-        // Act & Assert
+
+        // Act & Assert : Trying to add a non existent user to a session -> NotFoundException
         assertThrows(NotFoundException.class, () -> {
             sessionService.participate(sessionId, userId);
         });
@@ -209,14 +233,15 @@ public class SessionServiceTests {
     }
 
     @Test
-    @DisplayName("When trying to sub an already subbed user, sessionRepository.save shouldnt be called")
+    @DisplayName("When trying to sub an already subbed user, a BadRequestException should be thrown")
     void testSubYogaSession_AlreadySubUser_repositorySaveShouldntBeCalled() {
         // Arrange
         Long userId = 1L;
         Long sessionId = 1L;
         when(sessionRepository.findById(anyLong())).thenReturn(Optional.of(session1));
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(user1));
-        // Act & Assert
+
+        // Act & Assert : Already subbed User -> BadRequestException
         assertThrows(BadRequestException.class, () -> {
             sessionService.participate(sessionId, userId);
         });
@@ -224,7 +249,9 @@ public class SessionServiceTests {
         verify(sessionRepository, never()).save(any(Session.class));
     }
 
+    // -------
     // Unparticipate
+    // -------
 
     @Test
     @DisplayName("When a user unsub from a yoga session, sessionRepository.save should be called")
@@ -233,6 +260,7 @@ public class SessionServiceTests {
         Long userId = 1L;
         Long sessionId = 1L;
         when(sessionRepository.findById(anyLong())).thenReturn(Optional.of(session1));
+        // repo.save will return the parameter it has been called with
         when(sessionRepository.save(any(Session.class))).thenAnswer(invocation -> {
             return invocation.getArgument(0);
         });
@@ -248,19 +276,20 @@ public class SessionServiceTests {
 
         // Act
         sessionService.noLongerParticipate(sessionId, userId);
-        // Assert
+        // Assert : Session with one less user passed to repo.save
         verify(sessionRepository, times(1)).findById(anyLong());
         verify(sessionRepository, times(1)).save(expectedUpdatedSession);
     }
 
     @Test
-    @DisplayName("When a user tries to unsub from a non existent yoga session, sessionRepository.save shouldnt be called")
+    @DisplayName("When a user tries to unsub from a non existent yoga session, a NotFoundException should be thrown")
     void testUnsubYogaSession_UnknownSession_RepositorySaveShouldntBeCalled() {
         // Arrange
         Long userId = 1L;
         Long sessionId = 1L;
         when(sessionRepository.findById(anyLong())).thenReturn(Optional.empty());
-        // Act & Assert
+
+        // Act & Assert : The repo returns an empty optional -> NotFoundException
         assertThrows(NotFoundException.class, () -> {
             sessionService.noLongerParticipate(sessionId, userId);
         });
@@ -269,13 +298,14 @@ public class SessionServiceTests {
     }
 
     @Test
-    @DisplayName("When a user tries to unsub from a session he is not subbed to, sessionRepository.save shouldnt be called")
+    @DisplayName("When a user tries to unsub from a session he is not subbed to, a BadRequestException should be thrown")
     void testUnsubYogaSession_NotSubbedToTheSession_RepositorySaveShouldntBeCalled() {
         // Arrange
         Long userId = 1L;
         Long sessionId = 1L;
         when(sessionRepository.findById(anyLong())).thenReturn(Optional.of(sessionWithNoParticipant));
-        // Act & Assert
+
+        // Act & Assert : User is not subbed -> BadRequestException
         assertThrows(BadRequestException.class, () -> {
             sessionService.noLongerParticipate(sessionId, userId);
         });
