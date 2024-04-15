@@ -3,8 +3,13 @@
 import { logToA2SessionsPageAsABaseUser, logToA2SessionsPageAsAnAdmin } from "../support/utils/commands"
 
 describe('Logout spec', () => {
+
+    // ---
+    // as an admin, i should be able to log out
+    // ---
+
     describe('when logged as an admin', () => {
-        it('should display a functional logout button', () => {
+        it('should display a functional logout button redirecting to the homepage when clicked', () => {
             logToA2SessionsPageAsAnAdmin()
             cy.url().should('include', '/sessions')
             cy.contains('span', 'Logout').click()
@@ -19,8 +24,12 @@ describe('Logout spec', () => {
         })
     })
 
+    // ---
+    // as a base user, i should be able to log out
+    // ---
+
     describe('when logged as a base user', () => {
-        it('should display a functional logout button', () => {
+        it('should display a functional logout button redirecting to the homepage when clicked', () => {
             logToA2SessionsPageAsABaseUser()
             cy.url().should('include', '/sessions')
             cy.contains('span', 'Logout').click()

@@ -15,7 +15,7 @@ describe('Page not found spec', () => {
     })
   })
 
-  describe('when visiting an unknown url as base user', () => {
+  describe('when visiting an unknown url as a base user', () => {
     it('should redirect me to the 404 page', () => {
       logToA2SessionsPageAsABaseUser()
 

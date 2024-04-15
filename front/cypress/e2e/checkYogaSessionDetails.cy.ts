@@ -7,6 +7,7 @@ describe('Yoga Session Details spec', () => {
     // ---
     // as an admin, i should be able to check the details of a yoga session
     // ---
+
     describe('When connected as an admin', () => {
         it('Should display target yoga session details', () => {
             logToA2SessionsPageAsAnAdmin()
@@ -55,6 +56,7 @@ describe('Yoga Session Details spec', () => {
     // ---
     // as a base user, i should be able to check the details of a yoga session
     // ---
+
     describe('When connected as a simple user', () => {
         it('Should display target yoga session details', () => {
             logToA2SessionsPageAsABaseUser()
@@ -69,8 +71,6 @@ describe('Yoga Session Details spec', () => {
 
             cy.intercept('GET', '/api/session/*', { fixture: 'session.json' }).as('session')
             cy.intercept('GET', '/api/teacher/*', { fixture: 'teacher.json' }).as('teacher')
-
-            // cy.get('button[ng-reflect-router-link="detail,1"]').should('exist').click()
 
             cy.get('.item').first().contains('button', 'Detail').click()
 

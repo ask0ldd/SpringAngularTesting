@@ -1,5 +1,3 @@
-// admin shouldn't be able to sub or unsb
-
 // @ts-nocheck
 
 import { logToA2SessionsPageAsABaseUser, logToA2SessionsPageAsAnAdmin } from "../support/utils/commands";
@@ -9,6 +7,7 @@ describe('Subscribe / Unsubscribe Yoga Session spec', () => {
     // ---
     // as an admin, i shouldn't be able to sub or unsub to a yoga session
     // ---
+
     describe('When connected as an admin', () => {
         it('Should not display any participate / unparticipate button', () => {
             logToA2SessionsPageAsAnAdmin()
@@ -24,7 +23,6 @@ describe('Subscribe / Unsubscribe Yoga Session spec', () => {
             cy.intercept('GET', '/api/session/*', { fixture: 'session.json' }).as('session')
             cy.intercept('GET', '/api/teacher/*', { fixture: 'teacher.json' }).as('teacher')
 
-            // cy.get('button[ng-reflect-router-link="detail,1"]').should('exist').click()
             cy.get('.item').first().contains('button', 'Detail').click()
 
             cy.url().should('include', 'detail')
@@ -48,6 +46,7 @@ describe('Subscribe / Unsubscribe Yoga Session spec', () => {
     // ---
     // as a base user, i participating to a session, i should be able to unsubscribe
     // ---
+
     describe('When connected as a simple user', () => {
         describe('and if subscribed to the target session', () => {
             it('Should be able to unsubscribe to the yoga session', () => {
@@ -65,7 +64,6 @@ describe('Subscribe / Unsubscribe Yoga Session spec', () => {
                 cy.intercept('GET', '/api/session/*', { fixture: 'session.json' }).as('session')
                 cy.intercept('GET', '/api/teacher/*', { fixture: 'teacher.json' }).as('teacher')
 
-                // cy.get('button[ng-reflect-router-link="detail,1"]').should('exist').click()
                 cy.get('.item').first().contains('button', 'Detail').click()
 
                 cy.url().should('include', 'detail/1')
@@ -117,11 +115,9 @@ describe('Subscribe / Unsubscribe Yoga Session spec', () => {
 
                 cy.get('img[src="assets/sessions.png"]').should('exist')
 
-                // const sessionInterceptor = 
                 cy.intercept('GET', '/api/session/*', { fixture: 'sessionNoParticipant.json' }).as('sessionNoParticipant')
                 cy.intercept('GET', '/api/teacher/*', { fixture: 'teacher.json' }).as('teacher')
 
-                // cy.get('button[ng-reflect-router-link="detail,1"]').should('exist').click()
                 cy.get('.item').first().contains('button', 'Detail').click()
 
                 cy.url().should('include', 'detail/1')

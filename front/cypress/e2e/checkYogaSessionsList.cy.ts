@@ -7,6 +7,7 @@ describe('Yoga Session Details spec', () => {
     // ---
     // as an admin, i should be able to check the list of yoga sessions
     // ---
+    
     describe('When connected as an admin', () => {
         it('Should display a list of two yoga sessions', () => {
             logToA2SessionsPageAsAnAdmin()
@@ -31,6 +32,7 @@ describe('Yoga Session Details spec', () => {
     // ---
     // as a base user, i should be able to check the list of yoga sessions
     // ---
+
     describe('When connected as a base user', () => {
         it('Should display target yoga session details', () => {
             logToA2SessionsPageAsABaseUser()

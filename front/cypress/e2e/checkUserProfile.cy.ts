@@ -1,5 +1,10 @@
 // @ts-nocheck
 describe('User Profile spec', () => {
+
+    // ---
+    // as a base user, i should be able to access my profile
+    // ---
+
     it('Check User Profile', () => {
         cy.visit('/login')
 
@@ -39,6 +44,10 @@ describe('User Profile spec', () => {
             cy.contains('p', 'December 29, 2023').should('exist')
         })
     })
+
+    // ---
+    // clicking on the back button should lead me to the session page
+    // ---
 
     it('and the back button should lead you back to the sessions page', () => {
         cy.intercept('GET', '/api/session', { fixture: 'sessions.json' }).as('sessions')

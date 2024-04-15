@@ -5,8 +5,9 @@ import { logToA2SessionsPageAsABaseUser, logToA2SessionsPageAsAnAdmin } from "..
 describe('Delete Yoga Session spec', () => {
 
     // ---
-    // as an admin, i should be able to delete a yoga session from the details page
+    // as an admin, i should be able to delete a yoga session from its details page
     // ---
+
     describe('When connected as an admin', () => {
         it('should allow me to delete the session', () => {
 
@@ -23,7 +24,6 @@ describe('Delete Yoga Session spec', () => {
             cy.intercept('GET', '/api/session/*', { fixture: 'session.json' }).as('session')
             cy.intercept('GET', '/api/teacher/*', { fixture: 'teacher.json' }).as('teacher')
 
-            // cy.get('button[ng-reflect-router-link="detail,1"]').should('exist').click()
             cy.get('.item').first().contains('button', 'Detail').click()
 
             cy.url().should('include', 'detail')
@@ -55,8 +55,9 @@ describe('Delete Yoga Session spec', () => {
     })
 
     // ---
-    // as a base user, i shouldn't be able to delete a session from the details page
+    // as a base user, i shouldn't be able to delete a session from its details page
     // ---
+
     describe('When connected as a simple user', () => {
         it('shouldnt allow me to delete the session', () => {
             logToA2SessionsPageAsABaseUser()
@@ -72,7 +73,6 @@ describe('Delete Yoga Session spec', () => {
             cy.intercept('GET', '/api/session/*', { fixture: 'session.json' }).as('session')
             cy.intercept('GET', '/api/teacher/*', { fixture: 'teacher.json' }).as('teacher')
 
-            // cy.get('button[ng-reflect-router-link="detail,1"]').should('exist').click()
             cy.get('.item').first().contains('button', 'Detail').click()
 
             cy.url().should('include', 'detail')
@@ -88,5 +88,3 @@ describe('Delete Yoga Session spec', () => {
     })
 
   });
-
-// End of E2E Tests

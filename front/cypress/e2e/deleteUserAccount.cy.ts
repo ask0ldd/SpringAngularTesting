@@ -1,5 +1,10 @@
 // @ts-nocheck
 describe('Delete user account spec', () => {
+
+    // ---
+    // as a base user, i should be able to delete my account
+    // ---
+
     it('should display a functional delete button', () => {
         cy.visit('/login')
 
@@ -38,7 +43,6 @@ describe('Delete user account spec', () => {
             cy.contains('p', 'December 29, 2023').should('exist')
         })
 
-        // cy.intercept('GET', '/api/session', { fixture: 'sessions.json' }).as('sessions')
         cy.intercept('DELETE', '/api/user/*', 
         {   statusCode : 200,
             body : {}

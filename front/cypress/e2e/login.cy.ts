@@ -3,14 +3,20 @@ import { logToABlankSessionsPageAsAnAdmin } from "../support/utils/commands";
 
 describe('Login spec', () => {
 
-  // Successful Login
+  // ---
+  // as a user, i should be able to log in
+  // ---
+  
   it('Login successful', () => {
     logToABlankSessionsPageAsAnAdmin()
 
     cy.url().should('include', '/sessions')
   })
 
-  // Failing Login
+  // ---
+  // when using bad credentials, i should be able to log in
+  // ---
+
   it('Login failing', () => {
     cy.visit('/login')
 

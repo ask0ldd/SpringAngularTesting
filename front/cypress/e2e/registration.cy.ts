@@ -1,7 +1,10 @@
 // @ts-nocheck
 describe('Register spec', () => {
 
-  // Failing registration
+  // ---
+  // after registering successfully, i should be log in automatically
+  // ---
+
   describe('when the registration is successful', () => {
     it('the user should be able to log in', () => {
       cy.visit('/register')
@@ -55,7 +58,10 @@ describe('Register spec', () => {
     })
   })
 
-  // Failing registration
+  // ---
+  // when my registration process fails, an error message should be displayed
+  // ---
+
   describe('when the registration is failing', () => {
     it('an error message should be displayed', () => {
       cy.visit('/register')
