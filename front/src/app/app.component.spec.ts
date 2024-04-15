@@ -72,7 +72,11 @@ describe('AppComponent', () => {
     expect(fixture).toBeTruthy();
   });
 
-  describe('if the user is not logged', () => {
+  // --------
+  // User not Logged -> Login & Register links in Header
+  // --------
+
+  describe('when the user is not logged', () => {
     it('should display a login and a register link', () => {
       expect(fixture.debugElement.queryAll(By.css('span.link')).length).toBe(2)
       expect(fixture.debugElement.query(By.css('span[routerlink="session"]'))).toBeFalsy()
@@ -81,7 +85,11 @@ describe('AppComponent', () => {
       expect(fixture.debugElement.query(By.css('span[routerlink="register"]'))).toBeTruthy()
     });
 
-    describe('and the login button is clicked', () => {
+    // --------
+    // Clicking on Login
+    // --------
+
+    describe('when the login button is clicked', () => {
       it('should redirect the user to the login page', () => {
         jest.spyOn(router, 'navigateByUrl')
         const loginButton = fixture.debugElement.query(By.css('span[routerlink="login"]'))
@@ -93,6 +101,10 @@ describe('AppComponent', () => {
         expect(router.navigateByUrl).toHaveBeenCalledWith(router.parseUrl('login'), {"replaceUrl": false, "skipLocationChange": false, "state": undefined})
       })
     })
+
+    // --------
+    // Clicking on Register
+    // --------  
 
     describe('and the register button is clicked', () => {
       it('should redirect the user to the register page', () => {
@@ -108,20 +120,28 @@ describe('AppComponent', () => {
     })
   })
 
-  describe('if the user is logged', () => {
+  describe('when the user is logged', () => {
     beforeAll(() => {
       sessionServiceMock.$isLogged = jest.fn(() => of(true))
     })
 
     beforeEach(() => jest.clearAllMocks())
 
-    it('should display a sessions and a account link', () => {
+    // --------
+    // Logged -> Account / Me & Sessions Links in Header
+    // --------
+
+    it('should display a sessions link and a account link', () => {
       expect(fixture.debugElement.queryAll(By.css('span.link')).length).toBe(3)
       expect(fixture.debugElement.query(By.css('span[routerlink="login"]'))).toBeFalsy()
       expect(fixture.debugElement.query(By.css('span[routerlink="register"]'))).toBeFalsy()
       expect(fixture.debugElement.query(By.css('span[routerlink="sessions"]'))).toBeTruthy()
       expect(fixture.debugElement.query(By.css('span[routerlink="me"]'))).toBeTruthy()
     });
+
+    // --------
+    // Clicking on Logout
+    // --------
 
     describe('and the logout button is clicked', () => {
       it('should log you out and redirect you to the homepage', () => {
@@ -137,6 +157,10 @@ describe('AppComponent', () => {
       })
     })
 
+    // --------
+    // Clicking on the Session Link
+    // --------
+
     describe('and the session button is clicked', () => {
       it('should redirect the user to the sessions page', () => {
         jest.spyOn(router, 'navigateByUrl')
@@ -149,6 +173,10 @@ describe('AppComponent', () => {
         expect(router.navigateByUrl).toHaveBeenCalledWith(router.parseUrl('sessions'), {"replaceUrl": false, "skipLocationChange": false, "state": undefined})
       })
     })
+
+    // --------
+    // Clicking on Account / Me
+    // --------
 
     describe('and the account button is clicked', () => {
       it('should redirect the user to the me page', () => {

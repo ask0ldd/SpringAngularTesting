@@ -42,6 +42,10 @@ describe('TeacherService', () => {
     expect(service).toBeTruthy();
   });
 
+  // --------
+  // Unit Test : Get All Teachers
+  // --------
+
   describe('when the all method is called', () => {
     it('should send a request to the expected endpoint & sreturn an observable broadcasting an array of teachers', () => {
       const targetEndpoint = `${pathService}`
@@ -57,6 +61,10 @@ describe('TeacherService', () => {
       expect(JSON.stringify(subResponse)).toEqual(JSON.stringify([{...teacher1}, {...teacher2}]))
     })
   })
+
+  // --------
+  // Unit Test : Get some teachers details
+  // --------
 
   describe('when the detail method is called with a teacher id passed to it', () => {
     it('should send a request to the expected endpoint & return an observable broadcasting the infos of the target teacher', () => {

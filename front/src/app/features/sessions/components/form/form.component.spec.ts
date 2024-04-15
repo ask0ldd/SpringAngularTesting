@@ -149,6 +149,11 @@ describe('FormComponent', () => {
   });
 
   // !!!! fix : need a real inject router /  Unit Test
+
+  // --------
+  // Back Button
+  // --------
+
   describe('when clicking on the back button', () => {
     it('should go back in history', () => {
       const windowHistorySpy = jest.spyOn(window.history, 'back')
@@ -159,8 +164,10 @@ describe('FormComponent', () => {
     })
   })
 
-  // Unit Test
   describe('when connected as an admin', () => {
+
+    // Form with a disabled Submit Button
+
     it('should display the form with a disabled submit button', () => {
       const compiled = fixture.nativeElement as HTMLElement;
       expect(fixture.debugElement.query(By.css('h1')).nativeElement.textContent).toBe("Create session")
@@ -175,9 +182,12 @@ describe('FormComponent', () => {
     })
   })
 
-  // Unit Test
-  describe('when connected as an admin and the form is fully filled with a snackbar', () => {
-    it('should create a new yoga session for the teacher 2', async () => {
+  // --------
+  // Create a new Yoga Session
+  // --------
+
+  describe('when connected as an admin and the form is fully filled', () => {
+    it('should create a new yoga session for the teacher 2 and display a snackbar', async () => {
       // Arrange
       expect(fixture.debugElement.query(By.css('h1')).nativeElement.textContent).toBe("Create session")
       const submitFn = jest.spyOn(component, 'submit')
@@ -232,6 +242,10 @@ describe('FormComponent', () => {
       // mockStrIncludes = String.prototype.includes = jest.fn(() => true)
       routerMock.url = "update"
     })
+
+    // --------
+    // Edit a Yoga Session
+    // --------
 
     it('should be possible to succesfully edit a yoga session with a snackbar', async () => {
       const submitFn = jest.spyOn(component, 'submit')

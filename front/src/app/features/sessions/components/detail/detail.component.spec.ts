@@ -73,7 +73,7 @@ describe('DetailComponent', () => {
     navigate : jest.fn((commands : string[]) => null)
   }
 
-  describe('As a regular user', () => {
+  describe('when logged as a regular user', () => {
 
     const userId = 1
 
@@ -135,6 +135,10 @@ describe('DetailComponent', () => {
       expect(component).toBeTruthy();
     })
 
+    // --------
+    // All the datas from the session are displayed
+    // --------
+
     it('should display all the sessions datas', () => {
       // Arrange
       const attendeesnDateContainer = fixture.debugElement.query(By.css('mat-card-content'))
@@ -150,7 +154,10 @@ describe('DetailComponent', () => {
       expect(fixture.debugElement.query(By.css('mat-card-subtitle')).nativeElement.textContent).toContain(component.teacher?.firstName + ' ' + upperCasePipe.transform(component.teacher?.lastName))
     })
 
-    // Unit Test : Back button
+    // --------
+    // Back button
+    // --------
+
     it('should go back in history when clicking on the back button', () => {
       // Arrange
       const windowHistorySpy = jest.spyOn(window.history, 'back')
@@ -161,7 +168,10 @@ describe('DetailComponent', () => {
       expect(windowHistorySpy).toHaveBeenCalled()
     })
 
-    // Unit Test : Participate button
+    // --------
+    // Participate button
+    // --------
+
     describe('as a non participant to the session', () => {
       it('should display a participate button which should be calling sessionAPIservice.participate()', () => {
         // Arrange
@@ -183,7 +193,10 @@ describe('DetailComponent', () => {
       })
     })
 
-    // Unit Test : Unparticipate button
+    // --------
+    // Unparticipate button
+    // --------
+
     describe('as a participant to the session', () => {
       it('should display a do not participate button  which should be calling sessionAPIservice.unparticipate()', () => {
         // Arrange
@@ -208,7 +221,7 @@ describe('DetailComponent', () => {
 
   })
 
-  describe('As an admin', () => {
+  describe('when logged as an admin', () => {
 
     const userId = 1
 
@@ -269,7 +282,10 @@ describe('DetailComponent', () => {
       expect(component).toBeTruthy();
     })
 
-    // Unit Test : Delete button
+    // --------
+    // Delete button
+    // --------
+    
     it('should display a delete button which should be calling sessionAPIservice.delete()', () => {
       // Arrange
       const deleteButton = fixture.debugElement.queryAll(By.css('button[color="warn"]'))[0]

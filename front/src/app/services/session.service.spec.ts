@@ -38,6 +38,10 @@ describe('SessionService', () => {
     expect(service).toBeTruthy();
   });
 
+  // --------
+  // $logged broadcasting False by default
+  // --------
+
   describe('when isLogged = false', () => {
     test('$logged() should broadcast false', () => {
       let subValue
@@ -48,12 +52,16 @@ describe('SessionService', () => {
     });
   })
 
-  describe('when the logIn is called', () => {
+  // --------
+  // Unit Test : Login
+  // --------
+
+  describe('when the logIn method is called', () => {
     it('should update the session informations with the expect values & isLogged$ should be broadcasting true', () => {
       service.logIn(mockSessionInformation)
       expect(service.isLogged).toBeTruthy()
       expect(JSON.stringify(service.sessionInformation)).toBe(JSON.stringify(service.sessionInformation))
-      // !!! evaluations into a subscribe callback are ignored
+      // [!] evaluations into a subscribe callback are ignored
       // $logged() should broadcast true since islogged = true and next()
       let subValue
       service.$isLogged().subscribe(value => {
@@ -63,12 +71,16 @@ describe('SessionService', () => {
     });
   })
 
+  // --------
+  // Unit Test : Logout
+  // --------
+
   describe('when the logOut is called', () => {
     it('should update the session informations to undefined & isLogged$ should be broadcasting false', () => {
       service.logOut()
       expect(service.isLogged).toBeFalsy()
       expect(service.sessionInformation).toBeUndefined()
-      // !!! evaluations into a subscribe callback are ignored
+      // [!] evaluations into a subscribe callback are ignored
       // $logged() should broadcast false since islogged = false and next()
       let subValue
       service.$isLogged().subscribe(value => {

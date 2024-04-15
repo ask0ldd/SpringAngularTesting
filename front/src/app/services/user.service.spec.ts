@@ -38,6 +38,10 @@ describe('UserService', () => {
     expect(service).toBeTruthy();
   });
 
+  // --------
+  // Unit Test : Retrieve one User
+  // --------
+
   describe('when the getById is called with a user id passed to it', () => {
     it('should send a request to the expected endpoint & return an observable broadcasting the infos of target user', () => {
       const userId = "1"
@@ -54,6 +58,10 @@ describe('UserService', () => {
       expect(JSON.stringify(subResponse)).toEqual(JSON.stringify(mockUser))
     })
   })
+
+  // --------
+  // Unit Test : Delete A Target User
+  // --------
 
   describe('when the delete method is called with an id passed to it', () => {
     it('should send a request to the expected endpoint & return an observer broadcasting any value', () => {

@@ -90,6 +90,10 @@ describe('LoginComponent', () => {
     expect(component).toBeTruthy();
   })
 
+  // --------
+  // All the default elements should be displayed
+  // --------
+
   it('should render the login title, the fields and the an inactive submit button', () => {
     /*
       compiled ?
@@ -108,7 +112,11 @@ describe('LoginComponent', () => {
     expect((submitButton as HTMLButtonElement).disabled).toBeTruthy()
   })
 
-  describe('if the form contains a valid password but with an invalid email',() => {
+  // --------
+  // Invalid Email => Inactive Submit Button
+  // --------
+
+  describe('when the form contains a valid password but an invalid email',() => {
     it('should still display an inactive submit button', () => {
       // Arrange
       const compiled = fixture.nativeElement as HTMLElement;
@@ -124,7 +132,11 @@ describe('LoginComponent', () => {
     })
   })
 
-  describe('if the form contains a valid password and a valid email',() => {
+  // --------
+  // Valid Password & Email => Active Submit Button
+  // --------
+
+  describe('when the form contains a valid password and a valid email',() => {
     it('should display an active submit button', () => {
       // Arrange
       const compiled = fixture.nativeElement as HTMLElement;
@@ -140,7 +152,11 @@ describe('LoginComponent', () => {
     })
   })
 
-  describe('if the wrong credentials are submitted',() => {
+  // --------
+  // Wrong Credentials submitted
+  // --------
+
+  describe('when the wrong credentials are submitted',() => {
     it('should display an error message', () => {
       // Arrange
       const inputs = fixture.debugElement.queryAll(By.css('form input'))
@@ -160,7 +176,11 @@ describe('LoginComponent', () => {
     })
   })
 
-  describe('if the right credentials are submitted',() => {
+  // --------
+  // Valid Credentials submitted
+  // --------
+
+  describe('when valid credentials are submitted',() => {
     it('should navigate to the sessions page', () => {
       // Arrange
       const inputs = fixture.debugElement.queryAll(By.css('form input'))
@@ -184,5 +204,7 @@ describe('LoginComponent', () => {
       expect(fixture.debugElement.query(By.css('.error'))).toBeNull()
     })
   })
+
+  // UT : testing submit fn without template
 
 });

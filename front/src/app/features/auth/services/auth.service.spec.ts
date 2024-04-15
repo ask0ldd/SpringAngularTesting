@@ -48,7 +48,11 @@ describe('AuthService', () => {
     expect(service).toBeTruthy();
   });
 
-  describe('if the register method is passed a registerRequest object', () => {
+  // --------
+  // Unit Test : Register A New User
+  // --------
+
+  describe('when the register method receives a registerRequest obj', () => {
     it('should send a request to the expected endpoint & return an observable broadcasting void', () => {
       // Arrange
       const registerRequest: RegisterRequest = {
@@ -71,8 +75,12 @@ describe('AuthService', () => {
     });
   })
 
-  describe('if login method is passed a loginRequest object', () => {
-    it('should send a request to the expected endpoint &  return an observable broadcasting a session information', () => {
+  // --------
+  // Unit Test : Login A New User
+  // --------
+
+  describe('when login method receives a loginRequest obj', () => {
+    it('should send a request to the expected endpoint & return an observable broadcasting a session information', () => {
       // Arrange
       const loginRequest: LoginRequest = {
         email: "email@email.com",

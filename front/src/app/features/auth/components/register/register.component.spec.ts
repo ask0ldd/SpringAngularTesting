@@ -138,8 +138,8 @@ describe('RegisterComponent', () => {
     expect((submitButton as HTMLButtonElement).disabled).toBeTruthy()
   })
 
-  describe('if the form contains three valid fields and an invalid email',() => {
-    it('should still display an inactive submit button', () => {
+  describe('when the form contains three valid fields & an invalid email',() => {
+    it('should display an inactive submit button', () => {
       // Arrange
       const compiled = fixture.nativeElement as HTMLElement;
       const inputs = fixture.debugElement.queryAll(By.css('form input'))
@@ -156,8 +156,8 @@ describe('RegisterComponent', () => {
     })
   })
 
-  describe('if the form contains only valid fields',() => {
-    it('should still display an active submit button', () => {
+  describe('when the form contains only valid fields',() => {
+    it('should display an active submit button', () => {
       // Arrange
       const compiled = fixture.nativeElement as HTMLElement;
       const inputs = fixture.debugElement.queryAll(By.css('form input'))
@@ -174,7 +174,7 @@ describe('RegisterComponent', () => {
     })
   })
 
-  describe('if invalid datas are submitted',() => {
+  describe('when invalid datas are submitted',() => {
     it('should display an error message', () => {
       // Arrange
       const inputs = fixture.debugElement.queryAll(By.css('form input'))
@@ -197,7 +197,7 @@ describe('RegisterComponent', () => {
     })
   })
 
-  describe('if valid datas are submitted',() => {
+  describe('when valid datas are submitted',() => {
     it('should navigate to the login page', () => {
       // Arrange
       const inputs = fixture.debugElement.queryAll(By.css('form input'))
@@ -220,5 +220,6 @@ describe('RegisterComponent', () => {
     })
   })
 
-  // UT should test how validation react without template
+  // UT : submit without template
+
 });
