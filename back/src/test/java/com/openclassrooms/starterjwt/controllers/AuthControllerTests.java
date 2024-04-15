@@ -47,7 +47,9 @@ public class AuthControllerTests {
 
     private final User user1 = User.builder().id(1L).admin(true).email("ced@ced.com").firstName("john").lastName("doe").password("aeazezeaeazeae").build();
 
+    // -------
     // Login
+    // -------
 
     @Test
     @DisplayName("When a user log in with valid credentials, ctrlr.authenticateUser should return a 200 success response with a jwt")
@@ -100,7 +102,9 @@ public class AuthControllerTests {
         verify(userRepository, never()).findByEmail(anyString());
     }
 
+    // -------
     // Register
+    // -------
 
     @Test
     @DisplayName("When a user registers with an email already in DB, ctrlr.registerUser should return a 400 Bad Request response with the expected error message")

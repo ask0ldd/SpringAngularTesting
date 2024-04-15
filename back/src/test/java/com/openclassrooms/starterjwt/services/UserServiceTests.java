@@ -28,6 +28,10 @@ public class UserServiceTests {
 
     private final User user1 = User.builder().id(1L).admin(true).email("ced@ced.com").firstName("john").lastName("doe").password("aeazezeaeazeae").build();
 
+    // -------
+    // FindById
+    // -------
+
     @Test
     @DisplayName("When the user targeted by .findById() exists, said user should be returned")
     void testFindbyId_TargetUserExists_ShouldReturnAUser() {
@@ -55,18 +59,20 @@ public class UserServiceTests {
         verify(userRepository, times(1)).findById(1L);
     }
 
+    // -------
+    // Delete
+    // -------
+
     @Test
     @DisplayName("When .delete() is called with a userId, repo.deleteById() should be called")
-    void whenCallingDelete_ShouldCallTheDeleteIdMethodOfTheUserRepo() {
+    void testDelete_TheDeleteIdMethodOfTheUserRepoShouldBeCalled() {
         // Arrange
         // needs to use this syntax cause when(userRepository.deleteById(anyLong())).doNothing(); generates an IDE alert
         // when trying to mock methods returning void
         doNothing().when(userRepository).deleteById(anyLong());
         // Act
         userService.delete(1L);
-        // Assert
+        // Assert : repo.deletebyid should have been called with service.delete passed parameter
         verify(userRepository, times(1)).deleteById(1L);
     }
-
-    // TODO : IllegalArgumentException for both
 }

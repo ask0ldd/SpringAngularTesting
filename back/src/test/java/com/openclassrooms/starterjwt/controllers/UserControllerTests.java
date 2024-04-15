@@ -45,7 +45,9 @@ public class UserControllerTests {
         userDto.setPassword(user1.getPassword());
     }
 
+    // -------
     // FindById
+    // -------
 
     @Test
     @DisplayName("when service.findById returns a user, ctrlr.findById should return a 200 Success response with the user")
@@ -84,7 +86,9 @@ public class UserControllerTests {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
 
+    // -------
     // Delete // !!! error method name in original code, save instead of delete !!!!
+    // -------
 
     @Test
     @DisplayName("when service.delete returns no value, ctrlr.delete(save) should return a 200 Success response")

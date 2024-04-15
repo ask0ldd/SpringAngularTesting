@@ -2,8 +2,8 @@ package com.openclassrooms.starterjwt.repository;
 
 import com.openclassrooms.starterjwt.models.Session;
 import com.openclassrooms.starterjwt.models.Teacher;
-import com.openclassrooms.starterjwt.models.User;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -14,6 +14,8 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+
+// 6 Tests
 
 @SpringBootTest
 @Sql(scripts = "classpath:sql/reset-database.sql")
@@ -27,9 +29,6 @@ public class SessionRepositoryTests {
     private Session session1;
     private Session session2;
 
-    private Teacher teacher1;
-    private Teacher teacher2;
-
     String teacher1Fn = "John";
     String teacher1Ln = "Doe";
     String teacher2Fn = "Jane";
@@ -37,12 +36,12 @@ public class SessionRepositoryTests {
 
     @BeforeEach
     public void setup(){
-        teacher1 = Teacher.builder()
+        Teacher teacher1 = Teacher.builder()
                 .firstName(teacher1Fn)
                 .lastName(teacher1Ln)
                 .build();
 
-        teacher2 = Teacher.builder()
+        Teacher teacher2 = Teacher.builder()
                 .firstName(teacher2Fn)
                 .lastName(teacher2Ln)
                 .build();
@@ -58,8 +57,13 @@ public class SessionRepositoryTests {
         sessionRepository.save(session1);
     }
 
+    // -------
+    // FindById
+    // -------
+
     @Test
-    void findById_SessionExists_ReturnAUser(){
+    @DisplayName("when trying to find an existing session, an optional with said session should be returned")
+    void testFindById_SessionExists_ReturnAUser(){
         // Act
         Session session = sessionRepository.findById(1L).orElse(null);
         // Assert
@@ -70,15 +74,21 @@ public class SessionRepositoryTests {
     }
 
     @Test
-    void findById_SessionDoesntExist_ReturnAnEmptyOptional(){
+    @DisplayName("when trying to find a non existent session, an empty optional should be returned")
+    void testFindById_SessionDoesntExist_ReturnAnEmptyOptional(){
         // Act
         Optional<Session> sessionOptional = sessionRepository.findById(3L);
         // Assert
         assertThat(sessionOptional.isEmpty()).isTrue();
     }
 
+    // -------
+    // FindAll
+    // -------
+
     @Test
-    void findAll_MultipleSessionsExists_ReturnAnArrayOfSessions(){
+    @DisplayName("when looking for all sessions in a populated table, an array of sessions should be returned")
+    void testFindAll_MultipleSessionsExists_ReturnAnArrayOfSessions(){
         // Act
         sessionRepository.save(session2);
         List<Session> sessionList = sessionRepository.findAll();
@@ -91,7 +101,8 @@ public class SessionRepositoryTests {
     }
 
     @Test
-    void findAll_NoExistingSessions_ReturnAnEmptyArray(){
+    @DisplayName("when looking for all sessions in an empty table, an empty array should be returned")
+    void testFindAll_NoExistingSessions_ReturnAnEmptyArray(){
         // Act
         sessionRepository.deleteAll();
         List<Session> sessionList = sessionRepository.findAll();
@@ -99,8 +110,13 @@ public class SessionRepositoryTests {
         assertThat(sessionList.size()).isEqualTo(0);
     }
 
+    // -------
+    // Save
+    // -------
+
     @Test
-    void saveSession(){
+    @DisplayName("when trying to save a valid session, said session should be returned")
+    void testSaveSession(){
         // Act
         Session savedSession = sessionRepository.save(session2);
         // Assert
@@ -110,8 +126,13 @@ public class SessionRepositoryTests {
         assertThat(savedSession.getDescription()).isEqualTo(session2.getDescription());
     }
 
+    // -------
+    // Delete
+    // -------
+
     @Test
-    void deleteById(){
+    @DisplayName("after deleting an existing session in DB, said session should not be missing")
+    void testDeleteSessionById(){
         Session retrievedSession = sessionRepository.findById(1L).orElse(null);
         assertThat(retrievedSession).isNotNull();
         sessionRepository.deleteById(1L);

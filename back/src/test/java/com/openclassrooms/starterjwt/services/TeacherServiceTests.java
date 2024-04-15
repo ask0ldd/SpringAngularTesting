@@ -31,6 +31,10 @@ public class TeacherServiceTests {
     private final Teacher teacher1 = Teacher.builder().id(1L).firstName("teacher1Fn").lastName("teacher1Ln").build();
     private final Teacher teacher2 = Teacher.builder().id(2L).firstName("teacher2Fn").lastName("teacher2Ln").build();
 
+    // -------
+    // GetById
+    // -------
+
     @Test
     @DisplayName("When the teacher targeted by .findById() exists, said teacher should be returned")
     void testGetbyId_TargetTeacherExists_ShouldReturnATeacher() {
@@ -57,6 +61,10 @@ public class TeacherServiceTests {
         verify(teacherRepository, times(1)).findById(1L);
     }
 
+    // -------
+    // FindAll
+    // -------
+
     @Test
     @DisplayName("When .findall() is called and multiple teachers are returned by the repository, an array of teachers should be returned")
     void testFindAll_MultipleTeachersExist_ShouldReturnAnArrayOfTeachers() {
@@ -64,7 +72,7 @@ public class TeacherServiceTests {
         when(teacherRepository.findAll()).thenReturn(Arrays.asList(teacher1, teacher2));
         // Act
         List<Teacher> teachers = teacherService.findAll();
-        // Assert
+        // Assert : Expect an Array of Two Teachers
         assertThat(teachers.size()).isEqualTo(2);
         verify(teacherRepository, times(1)).findAll();
         assertThat(teachers.get(0).getFirstName()).isEqualTo(teacher1.getFirstName());
@@ -80,10 +88,8 @@ public class TeacherServiceTests {
         when(teacherRepository.findAll()).thenReturn(Arrays.asList());
         // Act
         List<Teacher> teachers = teacherService.findAll();
-        // Assert
+        // Assert : Expect an empty Array
         assertThat(teachers.size()).isEqualTo(0);
         verify(teacherRepository, times(1)).findAll();
     }
-
-    // TODO : IllegalArgumentException for both
 }

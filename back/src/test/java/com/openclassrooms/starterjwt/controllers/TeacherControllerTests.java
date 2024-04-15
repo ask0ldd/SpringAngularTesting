@@ -46,7 +46,9 @@ public class TeacherControllerTests {
         teacher2Dto.setId(teacher2.getId());
     }
 
+    // -------
     // FindById
+    // -------
 
     @Test
     @DisplayName("when service.findById returns a teacher, ctrlr.findById should return a 200 Success response with the teacher")
@@ -77,7 +79,9 @@ public class TeacherControllerTests {
         verify(teacherService, never()).findById(anyLong());
     }
 
+    // -------
     // FindAll
+    // -------
 
     @Test
     @DisplayName("when service.findAll is returning an array of 2 teachers, ctrlr.findAll should return a 200 Success response with two teachers")

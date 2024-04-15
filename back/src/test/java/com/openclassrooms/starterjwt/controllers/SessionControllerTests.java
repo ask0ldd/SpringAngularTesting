@@ -52,7 +52,9 @@ public class SessionControllerTests {
         session1Dto.setUpdatedAt(session1.getUpdatedAt());
     }
 
+    // -------
     // FindById
+    // -------
 
     @Test
     @DisplayName("when service.findById returns a Session, ctrlr.findById should return a 200 Success response with the session")
@@ -86,7 +88,9 @@ public class SessionControllerTests {
         verify(sessionService, never()).getById(anyLong());
     }
 
+    // -------
     // FindAll
+    // -------
 
     @Test
     @DisplayName("when service.findAll is returning an array of 2 Sessions, ctrlr.findAll should return a 200 Success response with two Sessions")
@@ -114,7 +118,9 @@ public class SessionControllerTests {
         assertThat(response.getBody()).isEqualTo(sessionsDtoEmptyList);
     }
 
+    // -------
     // Post
+    // -------
 
     @Test
     @DisplayName("when service.create is returning a session, ctrlr.Create should return a 200 Success response with the session")
@@ -128,7 +134,9 @@ public class SessionControllerTests {
         assertThat(response.getBody()).isEqualTo(session1Dto);
     }
 
+    // -------
     // Update
+    // -------
 
     @Test
     @DisplayName("when service.update returns a session, ctrlr.Update should return a 200 Success response with the session")
@@ -152,7 +160,9 @@ public class SessionControllerTests {
         verify(sessionService, never()).update(any(), any(Session.class));
     }
 
+    // -------
     // Delete (!!!! NB : delete controller method is named save instead of delete !!!!)
+    // -------
 
     @Test
     @DisplayName("when session.delete returns no value, ctrlr.Delete should return a 200 Success response") // !!!! error
@@ -193,7 +203,9 @@ public class SessionControllerTests {
         verify(sessionService, never()).delete(anyLong());
     }
 
+    // -------
     // Participate
+    // -------
 
     @Test
     @DisplayName("when service.participate returns no value, ctrl.participate should return a 200 Success response")
@@ -231,7 +243,9 @@ public class SessionControllerTests {
         verify(sessionService, never()).participate(anyLong(), anyLong());
     }
 
+    // -------
     // Unsub
+    // -------
 
     @Test
     @DisplayName("when service.noLongerParticipate returns no value, ctrl.participate should return a 200 Success response")

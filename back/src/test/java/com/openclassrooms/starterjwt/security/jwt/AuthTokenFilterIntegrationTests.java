@@ -3,6 +3,7 @@ package com.openclassrooms.starterjwt.security.jwt;
 import com.openclassrooms.starterjwt.models.User;
 import com.openclassrooms.starterjwt.security.services.UserDetailsImpl;
 import com.openclassrooms.starterjwt.security.services.UserDetailsServiceImpl;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,8 @@ import java.io.IOException;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
+
+// 2 Tests
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
@@ -46,7 +49,12 @@ public class AuthTokenFilterIntegrationTests {
             user1.getPassword()
     );
 
+    // -------
+    // DoFilterInternal
+    // -------
+
     @Test
+    @DisplayName("when a valid jwt with a valid email is sent through the request, the security context holder should hold a valid principal")
     void testDoFilterInternalWithMockJwtUtils_ValidJwt() throws ServletException, IOException {
         // Arrange
         // UserDetails principal = new UserDetailsImpl(user1.getId(), user1.getEmail(), user1.getFirstName(), user1.getLastName(), user1.isAdmin(), user1.getPassword());
@@ -65,6 +73,7 @@ public class AuthTokenFilterIntegrationTests {
     }
 
     @Test
+    @DisplayName("when a invalid jwt is sent through the request, the security context holder should hold no principal")
     void testDoFilterInternalWithMockJwtUtils_InvalidJwt() throws ServletException, IOException {
         // Arrange
         // UserDetails principal = new UserDetailsImpl(user1.getId(), user1.getEmail(), user1.getFirstName(), user1.getLastName(), user1.isAdmin(), user1.getPassword());
@@ -81,50 +90,3 @@ public class AuthTokenFilterIntegrationTests {
         assertThat(authentication).isNull();
     }
 }
-
-/*
-
-@Autowired
-  private JwtUtils jwtUtils;
-
-  @Autowired
-  private UserDetailsServiceImpl userDetailsService;
-
-  private static final Logger logger = LoggerFactory.getLogger(AuthTokenFilter.class);
-
-  @Override
-  protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-      throws ServletException, IOException {
-    try {
-      String jwt = parseJwt(request);
-      if (jwt != null && jwtUtils.validateJwtToken(jwt)) {
-        String username = jwtUtils.getUserNameFromJwtToken(jwt);
-
-        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-        UsernamePasswordAuthenticationToken authentication =
-            new UsernamePasswordAuthenticationToken(
-                userDetails,
-                null,
-                userDetails.getAuthorities());
-        authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-      }
-    } catch (Exception e) {
-      logger.error("Cannot set user authentication: {}", e);
-    }
-
-    filterChain.doFilter(request, response);
-  }
-
-  private String parseJwt(HttpServletRequest request) {
-    String headerAuth = request.getHeader("Authorization");
-
-    if (StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer ")) {
-      return headerAuth.substring(7, headerAuth.length());
-    }
-
-    return null;
-  }
-
- */

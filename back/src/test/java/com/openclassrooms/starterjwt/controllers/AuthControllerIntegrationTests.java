@@ -31,7 +31,9 @@ public class AuthControllerIntegrationTests {
 
     String jwt = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ5b2dhQHN0dWRpby5jb20iLCJpYXQiOjE3MTMwMjU1MTQsImV4cCI6MTcxMzExMTkxNH0.PYv_gYN2oLCCTZNRGaUcsDU3wUl-h14lVab_QxuViTIq1gIBw_P_TPrNNgqqcbqiaCvoudbxRig72hNsTKtb1Q";
 
+    // -------
     // Login
+    // -------
 
     @Test
     @DisplayName("When a user log in with valid credentials, the API should return a 200 success response with a jwt")
@@ -60,7 +62,9 @@ public class AuthControllerIntegrationTests {
                 .andExpect(status().isUnauthorized());
     }
 
+    // -------
     // Register
+    // -------
 
     @Test
     @DisplayName("When a user tries to register with valid infos, the API should return a 200 success response with a jwt")
