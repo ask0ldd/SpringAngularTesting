@@ -14,6 +14,7 @@ import { of } from 'rxjs';
 import { By } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import { UserService } from 'src/app/services/user.service';
+import { UpperCasePipe } from '@angular/common';
 
 const mockSessionService = {
   sessionInformation: {
@@ -54,6 +55,8 @@ const routerMock = {
   navigate : jest.fn((commands : string[]) => null)
 }
 
+const upperCasePipe = new UpperCasePipe();
+
 describe('MeComponent', () => {
   let component: MeComponent;
   let fixture: ComponentFixture<MeComponent>;
@@ -87,6 +90,19 @@ describe('MeComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  // --------
+  // Should display the users infos / Integration Test
+  // --------
+
+  it('should display all the sessions datas', () => {
+    // Arrange
+    const attendeesnDateContainer = fixture.debugElement.query(By.css('mat-card-content'))
+    const spans = attendeesnDateContainer.queryAll(By.css('span'))
+    // Assert
+    expect(fixture.debugElement.query(By.css('h1')).nativeElement.textContent).toEqual("User information")
+    expect(fixture.debugElement.query(By.css('mat-card-content p:first-child')).nativeElement.textContent).toContain("Name: " + userDetails.firstName + " " + upperCasePipe.transform(userDetails.lastName))
+  })
 
   // --------
   // Back button / Integration Test
@@ -158,6 +174,7 @@ describe('When logged as an admin', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+    expect(fixture.debugElement.query(By.css('mat-card-content')).nativeElement.textContent).toContain("You are admin")
   });
 
   it('shouldnt display any delete account button', () => {

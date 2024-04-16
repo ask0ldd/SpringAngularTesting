@@ -59,19 +59,12 @@ Testing a basic platform allowing individuals to book yoga sessions. A 80% cover
 
 ## Getting Started
 
-To run the app, you will need to clone two repositories. One for the front-end and the current one for the back-end.
+To run the app, you will need to clone the following repository :
 
-In case you wouldn't want to install the front-end, you could simply test the back-end using the following swagger : http://127.0.0.1:3001/swagger-ui/index.html after installing and running the back-end.
-
-- the back end repository :
+- Repository :
 
   ```
-  git clone https://github.com/ask0ldd/P3-SpringV2.git
-  ```
-
-- The front end repository
-  ```
-   git clone https://github.com/OpenClassrooms-Student-Center/Developpez-le-back-end-en-utilisant-Java-et-Spring.git
+  git clone https://github.com/ask0ldd/SpringAngularTesting.git
   ```
 
 ### Prerequisites
@@ -101,10 +94,6 @@ First you need to install these softwares, packages and librairies :
   npm install -g @angular/cli
   ```
 
-- clone the current repository
-  ```
-  git clone https://github.com/ask0ldd/SpringAngularTesting.git
-  ```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -160,8 +149,8 @@ First you need to install these softwares, packages and librairies :
 
 - Register a new user account.
 - Log into your account.
-- View the user informations.
-- Post a new yoga session, including a picture.
+- View the user's information.
+- Post a new yoga session.
 - Update an existing session.
 - Browse all posted sessions.
 - View all the details regarding a specific session.
@@ -172,12 +161,40 @@ First you need to install these softwares, packages and librairies :
 
 <!-- TESTING -->
 
-## Jest Unit & Integration Testing
+## Jest Unit & Integration Frontend Testing
+
+- Running the tests : 
+   ```
+   npm run test
+   ```
+- Generating the coverage :
+   ```
+   npm run coverage
+   ```
+- Accessing the generated coverage :
+   ```
+   visit /front/jest/lcov-report/index.html
+   ```
 
 ## Cypress E2E Testing
+
+ng e2e + e2e:coverage
+cypress:run
 
 ## Junit Unit & Integration Testing
 
 To train myself, I have written almost 200 tests so it may take around 20 minutes to execute them all. Please be patient.
+
+- Go to the /back/ folder.
+   
+
+- Execute all the tests & generate the coverage :
+   ```
+   mvn clean test
+   ```
+- Accessing the generated coverage :
+   ```
+   visit /back/target/site/index.html
+   ```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>

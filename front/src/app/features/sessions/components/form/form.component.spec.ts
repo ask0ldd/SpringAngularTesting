@@ -148,8 +148,7 @@ describe('FormComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  // !!!! fix : need a real inject router /  Unit Test
-
+  // !!!! fix : need a real inject router cause routerlink instead of (click)
   // --------
   // Back Button / Integration Test
   // --------
@@ -166,7 +165,9 @@ describe('FormComponent', () => {
 
   describe('when connected as an admin', () => {
 
-    // Form with a disabled Submit Button
+  // --------
+  // Submit button disabled by default / Integration Test
+  // --------
 
     it('should display the form with a disabled submit button', () => {
       const compiled = fixture.nativeElement as HTMLElement;
