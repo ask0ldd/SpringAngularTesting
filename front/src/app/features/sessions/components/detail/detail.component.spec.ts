@@ -20,25 +20,11 @@ import { TeacherService } from 'src/app/services/teacher.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DatePipe, TitleCasePipe, UpperCasePipe } from '@angular/common';
 import { Teacher } from 'src/app/interfaces/teacher.interface';
+import { mockYogaSession1, mockTeacher1 } from 'src/app/testing/mockDatas';
 
-const mockSession : Session = {
-  id : 1,
-  name : 'name',
-  description : 'description',
-  date : new Date("10/10/2023"),
-  teacher_id : 1,
-  users : [2, 3],
-  createdAt : new Date(),
-  updatedAt : new Date(),
-}
+const mockYogaSession : Session = {...mockYogaSession1}
 
-const teacher : Teacher = {
-  id: 1,
-  lastName: "lastname",
-  firstName: "firstname",
-  createdAt: new Date(),
-  updatedAt: new Date(),
-}
+const teacher : Teacher = {...mockTeacher1}
 
 const titleCasePipe = new TitleCasePipe();
 const datePipe = new DatePipe(`en-US`);
@@ -85,15 +71,15 @@ describe('DetailComponent', () => {
     }
 
     const mockSessionAPIService = {
-      detail : jest.fn(() => of(mockSession)),
+      detail : jest.fn(() => of(mockYogaSession)),
       participate : jest.fn(() => {
         // adds the current user to the mocked session participants
-        if(!mockSession.users.includes(userId)) mockSession.users.push(userId)
-        return of(mockSession)
+        if(!mockYogaSession.users.includes(userId)) mockYogaSession.users.push(userId)
+        return of(mockYogaSession)
       }),
       unParticipate : jest.fn(() => {
-        if(mockSession.users.includes(userId)) mockSession.users.pop()
-        return of(mockSession)
+        if(mockYogaSession.users.includes(userId)) mockYogaSession.users.pop()
+        return of(mockYogaSession)
       }), 
       delete : jest.fn(() => of(void 0)),
     }
@@ -144,13 +130,13 @@ describe('DetailComponent', () => {
       const attendeesnDateContainer = fixture.debugElement.query(By.css('mat-card-content'))
       const spans = attendeesnDateContainer.queryAll(By.css('span'))
       // Assert
-      expect(fixture.debugElement.query(By.css('h1')).nativeElement.textContent).toEqual(titleCasePipe.transform(mockSession.name))
+      expect(fixture.debugElement.query(By.css('h1')).nativeElement.textContent).toEqual(titleCasePipe.transform(mockYogaSession.name))
       expect(fixture.debugElement.queryAll(By.css('.picture'))[0].nativeElement.src).toContain('assets/sessions.png')
-      expect(fixture.debugElement.query(By.css('.description')).nativeElement.textContent).toContain(mockSession.description)
-      expect(fixture.debugElement.query(By.css('.created')).nativeElement.textContent).toContain(datePipe.transform(mockSession.createdAt,'longDate'))
-      expect(fixture.debugElement.query(By.css('.updated')).nativeElement.textContent).toContain(datePipe.transform(mockSession.updatedAt,'longDate'))
-      expect(spans[0].nativeElement.textContent).toContain(mockSession.users.length + ' attendees')
-      expect(spans[1].nativeElement.textContent).toContain(datePipe.transform(mockSession.date,'longDate'))
+      expect(fixture.debugElement.query(By.css('.description')).nativeElement.textContent).toContain(mockYogaSession.description)
+      expect(fixture.debugElement.query(By.css('.created')).nativeElement.textContent).toContain(datePipe.transform(mockYogaSession.createdAt,'longDate'))
+      expect(fixture.debugElement.query(By.css('.updated')).nativeElement.textContent).toContain(datePipe.transform(mockYogaSession.updatedAt,'longDate'))
+      expect(spans[0].nativeElement.textContent).toContain(mockYogaSession.users.length + ' attendees')
+      expect(spans[1].nativeElement.textContent).toContain(datePipe.transform(mockYogaSession.date,'longDate'))
       expect(fixture.debugElement.query(By.css('mat-card-subtitle')).nativeElement.textContent).toContain(component.teacher?.firstName + ' ' + upperCasePipe.transform(component.teacher?.lastName))
     })
 
@@ -188,7 +174,7 @@ describe('DetailComponent', () => {
         participateButton.triggerEventHandler('click', null)
         // Assert
         expect(mockSessionAPIService.participate).toHaveBeenCalled()
-        expect(mockSession.users.includes(userId)).toBeTruthy()
+        expect(mockYogaSession.users.includes(userId)).toBeTruthy()
         expect(mockSessionAPIService.detail).toHaveBeenCalledTimes(1)
       })
     })
@@ -213,7 +199,7 @@ describe('DetailComponent', () => {
         unparticipateButton.triggerEventHandler('click', null)
         // Assert
         expect(mockSessionAPIService.unParticipate).toHaveBeenCalled()
-        expect(mockSession.users.includes(userId)).toBeFalsy()
+        expect(mockYogaSession.users.includes(userId)).toBeFalsy()
         expect(mockSessionAPIService.detail).toHaveBeenCalledTimes(1)
       })
     })
@@ -233,16 +219,16 @@ describe('DetailComponent', () => {
     }
 
     const mockSessionAPIService = {
-      detail : jest.fn(() => of(mockSession)),
+      detail : jest.fn(() => of(mockYogaSession)),
       participate : jest.fn(() => {
         // adds the current user to the mockSession participants
-        if(!mockSession.users.includes(userId)) mockSession.users.push(userId)
-        return of(mockSession)
+        if(!mockYogaSession.users.includes(userId)) mockYogaSession.users.push(userId)
+        return of(mockYogaSession)
       }),
       unParticipate : jest.fn(() => {
         // adds the current user out of the mockSession participants
-        if(mockSession.users.includes(userId)) mockSession.users.pop()
-        return of(mockSession)
+        if(mockYogaSession.users.includes(userId)) mockYogaSession.users.pop()
+        return of(mockYogaSession)
       }), 
       delete : jest.fn(() => of(void 0)),
     }
@@ -292,7 +278,7 @@ describe('DetailComponent', () => {
       // Act
       deleteButton.triggerEventHandler('click', null)
       // Assert
-      expect(mockSessionAPIService.delete).toHaveBeenCalledWith(mockSession.id)
+      expect(mockSessionAPIService.delete).toHaveBeenCalledWith(mockYogaSession.id)
       expect(routerMock.navigate).toHaveBeenCalledWith(['sessions']) 
     })
   })

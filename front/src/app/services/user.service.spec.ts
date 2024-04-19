@@ -5,19 +5,11 @@ import { expect } from '@jest/globals';
 import { UserService } from './user.service';
 import { User } from '../interfaces/user.interface';
 import { of } from 'rxjs';
+import { mockBaseUser } from '../testing/mockDatas';
 
 const pathService = 'api/user';
 
-const mockUser : User = {
-  id: 1,
-  email: 'email@email.com',
-  lastName: 'lastname',
-  firstName: 'firstname',
-  admin: false,
-  password: 'password',
-  createdAt: new Date(),
-  updatedAt: new Date(),
-}
+const mockUser : User = {...mockBaseUser}
 
 describe('UserService', () => {
   let service: UserService;

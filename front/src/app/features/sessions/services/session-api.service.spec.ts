@@ -5,28 +5,11 @@ import { expect } from '@jest/globals';
 import { SessionApiService } from './session-api.service';
 import { Session } from '../interfaces/session.interface';
 import { of } from 'rxjs';
+import { mockYogaSession1, mockYogaSession2 } from 'src/app/testing/mockDatas';
 
-const session1 : Session = {
-  id : 1,
-  name : 'name1',
-  description : 'description1',
-  date : new Date("11/10/2023"),
-  teacher_id : 1,
-  users : [2, 3],
-  createdAt : new Date(),
-  updatedAt : new Date(),
-}
+const yogaSessionMock1 : Session = {...mockYogaSession1}
 
-const session2 : Session = {
-  id : 2,
-  name : 'name2',
-  description : 'description2',
-  date : new Date("12/10/2023"),
-  teacher_id : 2,
-  users : [4, 5],
-  createdAt : new Date(),
-  updatedAt : new Date(),
-}
+const yogaSessionMock2 : Session = {...mockYogaSession2}
 
 const pathService = 'api/session';
 
@@ -57,7 +40,7 @@ describe('SessionsService', () => {
     it('should send a request to the expected endpoint & an observable broadcasting an array of sessions should be returned', () => {
       const targetEndpoint = `${pathService}`
 
-      jest.spyOn(httpClient, 'get').mockReturnValue(of([{...session1}, {...session2}]))
+      jest.spyOn(httpClient, 'get').mockReturnValue(of([{...yogaSessionMock1}, {...yogaSessionMock2}]))
 
       expect(httpClient.get).not.toHaveBeenCalled()
 
@@ -67,7 +50,7 @@ describe('SessionsService', () => {
         subResponse = response
       })
       expect(httpClient.get).toHaveBeenCalledWith(targetEndpoint)
-      expect(JSON.stringify(subResponse)).toEqual(JSON.stringify([session1, session2]))
+      expect(JSON.stringify(subResponse)).toEqual(JSON.stringify([yogaSessionMock1, yogaSessionMock2]))
     });
   })
 
@@ -80,7 +63,7 @@ describe('SessionsService', () => {
       const id = '1'
       const targetEndpoint = `${pathService}/${id}`
 
-      jest.spyOn(httpClient, 'get').mockReturnValue(of({...session1}))
+      jest.spyOn(httpClient, 'get').mockReturnValue(of({...yogaSessionMock1}))
 
       expect(httpClient.get).not.toHaveBeenCalled()
 
@@ -90,7 +73,7 @@ describe('SessionsService', () => {
         subResponse = response
       })
       expect(httpClient.get).toHaveBeenCalledWith(targetEndpoint)
-      expect(JSON.stringify(subResponse)).toEqual(JSON.stringify(session1))
+      expect(JSON.stringify(subResponse)).toEqual(JSON.stringify(yogaSessionMock1))
     });
   })
 
@@ -125,17 +108,17 @@ describe('SessionsService', () => {
     it('should send a request to the expected endpoint & an observable broadcasting this session should be returned', () => {
       const targetEndpoint = `${pathService}`
 
-      jest.spyOn(httpClient, 'post').mockReturnValue(of(session1))
+      jest.spyOn(httpClient, 'post').mockReturnValue(of(yogaSessionMock1))
 
       expect(httpClient.post).not.toHaveBeenCalled()
 
       // [!] evaluations into a subscribe callback are ignored
       let subResponse
-      service.create(session1).subscribe((response) => {
+      service.create(yogaSessionMock1).subscribe((response) => {
         subResponse = response
       })
-      expect(httpClient.post).toHaveBeenCalledWith(targetEndpoint, session1)
-      expect(subResponse).toEqual(session1)
+      expect(httpClient.post).toHaveBeenCalledWith(targetEndpoint, yogaSessionMock1)
+      expect(subResponse).toEqual(yogaSessionMock1)
     });
   })
 
@@ -148,17 +131,17 @@ describe('SessionsService', () => {
       const id = '1'
       const targetEndpoint = `${pathService}/${id}`
 
-      jest.spyOn(httpClient, 'put').mockReturnValue(of(session1))
+      jest.spyOn(httpClient, 'put').mockReturnValue(of(yogaSessionMock1))
 
       expect(httpClient.put).not.toHaveBeenCalled()
 
       // [!] evaluations into a subscribe callback are ignored
       let subResponse
-      service.update(id, session1).subscribe((response) => {
+      service.update(id, yogaSessionMock1).subscribe((response) => {
         subResponse = response
       })
-      expect(httpClient.put).toHaveBeenCalledWith(targetEndpoint, session1)
-      expect(subResponse).toEqual(session1)
+      expect(httpClient.put).toHaveBeenCalledWith(targetEndpoint, yogaSessionMock1)
+      expect(subResponse).toEqual(yogaSessionMock1)
     });
   })
 

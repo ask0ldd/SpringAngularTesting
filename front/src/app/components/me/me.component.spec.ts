@@ -15,6 +15,7 @@ import { By } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import { UserService } from 'src/app/services/user.service';
 import { UpperCasePipe } from '@angular/common';
+import { mockBaseUser } from 'src/app/testing/mockDatas';
 
 const mockSessionService = {
   sessionInformation: {
@@ -26,16 +27,7 @@ const mockSessionService = {
 
 const mockSessionServiceAdmin = {...mockSessionService, sessionInformation : { admin : true, id : 1}}
 
-const userDetails = {
-  id: 1,
-  email: 'email@email.com',
-  lastName: 'lastname',
-  firstName: 'firstname',
-  admin: false,
-  password: 'password',
-  createdAt: new Date(),
-  updatedAt: new Date(),
-}
+const userDetails = {...mockBaseUser}
 
 const mockUserService = {
   getById : (id : string) => of(userDetails),

@@ -5,22 +5,11 @@ import { expect } from '@jest/globals';
 import { TeacherService } from './teacher.service';
 import { Teacher } from '../interfaces/teacher.interface';
 import { of } from 'rxjs';
+import { mockTeacher1, mockTeacher2 } from '../testing/mockDatas';
 
-const teacher1 : Teacher = {
-  id: 1,
-  lastName: "lastname",
-  firstName: "firstname",
-  createdAt: new Date(),
-  updatedAt: new Date(),
-}
+const teacher1 : Teacher = {...mockTeacher1}
 
-const teacher2 : Teacher = {
-  id: 2,
-  lastName: "lastname2",
-  firstName: "firstname2",
-  createdAt: new Date(),
-  updatedAt: new Date(),
-}
+const teacher2 : Teacher = {...mockTeacher2}
 
 describe('TeacherService', () => {
   let service: TeacherService;
