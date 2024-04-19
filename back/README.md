@@ -12,7 +12,7 @@
 <h3 align="center">Yoga</h3>
 
 <p align="center">
-School work : Testing a basic platform allowing individuals to book yoga sessions. A 80% coverage was expected.
+School work : Testing a basic platform which allows users to book yoga sessions. A 80% coverage was expected.
 </p>
 
 Here are my coverage reports.
@@ -137,7 +137,7 @@ First you need to install these softwares, packages and librairies :
 
 2. Install MySQL & Workbench and define a root password.
 
-3. Create an env.properties file into the ressources folder of the project and add the following lines, with your root password replacing 'yourownrootpassword' (don't do this on a production server, create a new user with all the needed authorisations instead) :
+3. Get into the resources folder of the project and edit the following lines of the application.properties file, with your root password replacing 'yourownrootpassword' (don't do this on a production server, create a new user with all the needed authorisations instead) :
    ```
    spring.datasource.username=root
    spring.datasource.password=yourownrootpassword
