@@ -15,6 +15,20 @@
 School work : Testing a basic platform allowing individuals to book yoga sessions. A 80% coverage was expected.
 </p>
 
+Here are my coverage reports.
+
+- Jest (Frontend) :
+
+![Jest Coverage](./ressources/jestreport.jpg)
+
+- Cypress (E2E) :
+
+![Cypress Coverage](./ressources/cypressreport.jpg)
+
+- Jacoco (Backend) :
+
+![Jacoco Coverage](./ressources/jacocoreport.jpg)
+
 <!-- TABLE OF CONTENTS -->
 <details>
   <summary>Table of Contents</summary>
