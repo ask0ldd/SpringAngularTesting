@@ -83,6 +83,11 @@ First you need to install these softwares, packages and librairies :
   ```
   https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html
   ```
+- maven
+  ```
+  https://maven.apache.org/download.cgi
+  https://maven.apache.org/install.html
+  ```
 - mysql & mysqlwork bench (full install)
 
   ```
@@ -128,7 +133,7 @@ First you need to install these softwares, packages and librairies :
    The following connection should already be set up :
       Local Instance MySQL80 / user : root / url : localhost:3306.
    ```
-5. Create an empty "test" schema with Workbench. You don't need to do more than that since all the mandatory tables will be created by Spring JPA when executing the project.
+5. Create an empty "test" schema with MYSQL Workbench. You don't need to do more than that since all the mandatory tables will be created by Spring JPA when executing the project.
 
 6. Build the project.
 
@@ -163,38 +168,54 @@ First you need to install these softwares, packages and librairies :
 
 ## Jest Unit & Integration Frontend Testing
 
+Install the frontend first.
+
 - Running the tests : 
    ```
    npm run test
    ```
-- Generating the coverage :
+- Generating the coverage, execute :
    ```
    npm run coverage
    ```
-- Accessing the generated coverage :
+- To access the generated coverage :
    ```
-   visit /front/jest/lcov-report/index.html
+   visit /front/coverage/jest/lcov-report/index.html
    ```
 
 ## Cypress E2E Testing
 
-ng e2e + e2e:coverage
-cypress:run
+Install the frontend first.
+
+- Go to the Front folder then run :
+   ```
+   npm run e2e
+   ```
+- To generate the coverage, execute : 
+   ```
+   npm run e2e:coverage
+   ```
+- To access the generated coverage :
+   ```
+   visit /front/coverage/lcov-report/index.html
+   ```
 
 ## Junit Unit & Integration Testing
+
+Install the backend first.
 
 To train myself, I have written almost 200 tests so it may take around 20 minutes to execute them all. Please be patient.
 
 - Go to the /back/ folder.
    
 
-- Execute all the tests & generate the coverage :
+- To generate the coverage, execute :
    ```
    mvn clean test
    ```
-- Accessing the generated coverage :
+- To access the generated coverage :
    ```
-   visit /back/target/site/index.html
+   visit /back/target/site/jacoco/index.html
    ```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>

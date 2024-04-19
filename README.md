@@ -59,19 +59,12 @@ Testing a basic platform allowing individuals to book yoga sessions. A 80% cover
 
 ## Getting Started
 
-To run the app, you will need to clone two repositories. One for the front-end and the current one for the back-end.
+To run the app, you will need to clone the following repository :
 
-In case you wouldn't want to install the front-end, you could simply test the back-end using the following swagger : http://127.0.0.1:3001/swagger-ui/index.html after installing and running the back-end.
-
-- the back end repository :
+- Repository :
 
   ```
-  git clone https://github.com/ask0ldd/P3-SpringV2.git
-  ```
-
-- The front end repository
-  ```
-   git clone https://github.com/OpenClassrooms-Student-Center/Developpez-le-back-end-en-utilisant-Java-et-Spring.git
+  git clone https://github.com/ask0ldd/SpringAngularTesting.git
   ```
 
 ### Prerequisites
@@ -90,6 +83,11 @@ First you need to install these softwares, packages and librairies :
   ```
   https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html
   ```
+- maven
+  ```
+  https://maven.apache.org/download.cgi
+  https://maven.apache.org/install.html
+  ```
 - mysql & mysqlwork bench (full install)
 
   ```
@@ -101,10 +99,6 @@ First you need to install these softwares, packages and librairies :
   npm install -g @angular/cli
   ```
 
-- clone the current repository
-  ```
-  git clone https://github.com/ask0ldd/SpringAngularTesting.git
-  ```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -139,7 +133,7 @@ First you need to install these softwares, packages and librairies :
    The following connection should already be set up :
       Local Instance MySQL80 / user : root / url : localhost:3306.
    ```
-5. Create an empty "test" schema with Workbench. You don't need to do more than that since all the mandatory tables will be created by Spring JPA when executing the project.
+5. Create an empty "test" schema with MYSQL Workbench. You don't need to do more than that since all the mandatory tables will be created by Spring JPA when executing the project.
 
 6. Build the project.
 
@@ -160,8 +154,8 @@ First you need to install these softwares, packages and librairies :
 
 - Register a new user account.
 - Log into your account.
-- View the user informations.
-- Post a new yoga session, including a picture.
+- View the user's information.
+- Post a new yoga session.
 - Update an existing session.
 - Browse all posted sessions.
 - View all the details regarding a specific session.
@@ -172,12 +166,56 @@ First you need to install these softwares, packages and librairies :
 
 <!-- TESTING -->
 
-## Jest Unit & Integration Testing
+## Jest Unit & Integration Frontend Testing
+
+Install the frontend first.
+
+- Running the tests : 
+   ```
+   npm run test
+   ```
+- Generating the coverage, execute :
+   ```
+   npm run coverage
+   ```
+- To access the generated coverage :
+   ```
+   visit /front/coverage/jest/lcov-report/index.html
+   ```
 
 ## Cypress E2E Testing
 
+Install the frontend first.
+
+- Go to the Front folder then run :
+   ```
+   npm run e2e
+   ```
+- To generate the coverage, execute : 
+   ```
+   npm run e2e:coverage
+   ```
+- To access the generated coverage :
+   ```
+   visit /front/coverage/lcov-report/index.html
+   ```
+
 ## Junit Unit & Integration Testing
 
+Install the backend first.
+
 To train myself, I have written almost 200 tests so it may take around 20 minutes to execute them all. Please be patient.
+
+- Go to the /back/ folder.
+   
+
+- To generate the coverage, execute :
+   ```
+   mvn clean test
+   ```
+- To access the generated coverage :
+   ```
+   visit /back/target/site/jacoco/index.html
+   ```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
