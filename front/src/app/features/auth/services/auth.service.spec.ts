@@ -64,7 +64,7 @@ describe('AuthService', () => {
       const targetEndpoint = `${pathService}/register`
       jest.spyOn(httpClient, 'post').mockReturnValue(of(void 0))
       // Act
-      // !!! evaluations into a subscribe callback are ignored
+      // [!] evaluations into a subscribe callback are ignored
       let subResponse
       service.register(registerRequest).subscribe((response) => {
         subResponse = response
@@ -89,7 +89,7 @@ describe('AuthService', () => {
       const targetEndpoint = `${pathService}/login`
       jest.spyOn(httpClient, 'post').mockReturnValue(of(sessionInformation))
       // Act
-      // !!! evaluations into a subscribe callback are ignored
+      // [!] evaluations into a subscribe callback are ignored
       let subResponse
       service.login(loginRequest).subscribe((response) => {
         subResponse = response
