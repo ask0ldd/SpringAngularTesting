@@ -133,7 +133,7 @@ describe('AppComponent', () => {
         const logoutButton = fixture.debugElement.queryAll(By.css('span.link'))[2]
         expect(sessionServiceMock.logOut).not.toHaveBeenCalled()
         expect(router.navigate).not.toHaveBeenCalled()
-        ngZone.run(() => { /// !!!! why ngZone
+        ngZone.run(() => {
           logoutButton.triggerEventHandler('click', null)
         })
         expect(sessionServiceMock.logOut).toHaveBeenCalled()

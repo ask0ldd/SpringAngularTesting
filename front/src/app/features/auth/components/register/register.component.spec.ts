@@ -214,6 +214,4 @@ describe('RegisterComponent', () => {
     })
   })
 
-  // UT : submit without template
-
 });

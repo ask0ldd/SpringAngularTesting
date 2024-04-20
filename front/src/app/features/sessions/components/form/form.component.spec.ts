@@ -68,8 +68,8 @@ const routerMock = {
 }
 
 describe('FormComponent', () => {
-  let component: FormComponent;
-  let fixture: ComponentFixture<FormComponent>;
+  let component: FormComponent
+  let fixture: ComponentFixture<FormComponent>
   let ngZone : NgZone
 
   beforeEach(async () => {
@@ -85,46 +85,44 @@ describe('FormComponent', () => {
         MatSnackBarModule,
         MatSelectModule,
         BrowserAnimationsModule,
-        NoopAnimationsModule, // had to be added cause "TypeError: element.animate is not a function" when opening the select
+        NoopAnimationsModule, // had to be added since "TypeError: element.animate is not a function" showed when opening the select
       ],
       providers: [
         { provide: SessionService, useValue: mockSessionService },
         { provide: TeacherService, useValue: mockTeacherService },
         { provide: SessionApiService, useValue: mockSessionAPIService },
         { provide: MatSnackBar, useValue : snackBarMock },
-        { provide: ActivatedRoute, useValue : activatedRouteMock }, // used to mock the function returning the url sessionId param
+        { provide: ActivatedRoute, useValue : activatedRouteMock }, // used to mock the function returning the url/{sessionId} param
         { provide: Router, useValue: routerMock },
       ],
       declarations: [FormComponent]
     })
       .compileComponents();
 
-    fixture = TestBed.createComponent(FormComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-    // router = TestBed.inject(Router) as Router
+    fixture = TestBed.createComponent(FormComponent)
+    component = fixture.componentInstance
+    fixture.detectChanges()
     ngZone = TestBed.inject(NgZone)
     jest.clearAllMocks()
   });
 
   it('should create', () => {
-    expect(component).toBeTruthy();
+    expect(component).toBeTruthy()
   });
 
-  // !!!! fix : need a real inject router cause routerlink instead of (click)
   // --------
   // Back Button / Integration Test
   // --------
 
-  /*describe('when clicking on the back button', () => {
-    it('should go back in history', () => {
+  describe('when clicking on the back button', () => {
+    it('should go back in history', async () => {
       const windowHistorySpy = jest.spyOn(window.history, 'back')
       const backButton = fixture.debugElement.query(By.css('button[mat-icon-button]'))
       backButton.triggerEventHandler('click', null)
-      expect(windowHistorySpy).toHaveBeenCalled()
+      await fixture.whenStable()
       expect(routerMock.navigateByUrl).toHaveBeenCalled()
     })
-  })*/
+  })
 
   describe('when connected as an admin', () => {
 
@@ -134,6 +132,7 @@ describe('FormComponent', () => {
 
     it('should display the form with a disabled submit button', () => {
       const compiled = fixture.nativeElement as HTMLElement;
+      // Assert
       expect(fixture.debugElement.query(By.css('h1')).nativeElement.textContent).toBe("Create session")
       expect(compiled.querySelector('input[formcontrolname="name"]')).toBeTruthy()
       expect(compiled.querySelector('input[formcontrolname="date"]')).toBeTruthy()
@@ -151,7 +150,7 @@ describe('FormComponent', () => {
   // --------
 
   describe('when connected as an admin and the form is fully filled', () => {
-    it('should create a new yoga session for the teacher 2 and display a snackbar', async () => {
+    it('should create a new yoga session for the teacher 2 and display a confirmation snackbar', async () => {
       // Arrange
       expect(fixture.debugElement.query(By.css('h1')).nativeElement.textContent).toBe("Create session")
       const submitFn = jest.spyOn(component, 'submit')
@@ -159,8 +158,7 @@ describe('FormComponent', () => {
       const nameInput = fixture.debugElement.query(By.css('form input[formcontrolname="name"]'))
       const dateInput = fixture.debugElement.query(By.css('form input[formcontrolname="date"]'))
       const descriptionTextarea = fixture.debugElement.query(By.css('form textarea[formcontrolname="description"]'))
-      const submitButton = fixture.debugElement.query(By.css('button[type="submit"]'))
-
+      
       const select = fixture.debugElement.query(By.css('mat-select')).nativeElement
       const selectTrigger = fixture.debugElement.query(By.css('.mat-select-trigger')).nativeElement
 
@@ -170,7 +168,7 @@ describe('FormComponent', () => {
       dateInput.triggerEventHandler('input', { target: { value: "04/04/2024"}})
       descriptionTextarea.triggerEventHandler('input', { target: { value: "yoga session description"}})
       
-      // select the second option (teacher) from the select
+      // select the second teacher from the select
       selectTrigger.click()
       await fixture.whenStable()
       fixture.detectChanges()
@@ -207,19 +205,21 @@ describe('FormComponent', () => {
     // Edit a Yoga Session / Integration Test
     // --------
 
-    it('should be possible to succesfully edit a yoga session with a snackbar', async () => {
+    it('should be possible to succesfully edit a yoga session with a confirmation snackbar appearing at the end', async () => {
+      // Arrange
       const submitFn = jest.spyOn(component, 'submit')
       const form = fixture.debugElement.query(By.css('form'))
       expect(fixture.debugElement.query(By.css('h1')).nativeElement.textContent).toBe("Update session")
       const nameInput = fixture.debugElement.query(By.css('form input[formcontrolname="name"]'))
       const dateInput = fixture.debugElement.query(By.css('form input[formcontrolname="date"]'))
       const descriptionTextarea = fixture.debugElement.query(By.css('form textarea[formcontrolname="description"]'))
-      const submitButton = fixture.debugElement.query(By.css('button[type="submit"]'))
 
+      // Pre-Act Assertion 
       expect(nameInput.nativeElement.value).toBe(yogaSession.name)
       expect(descriptionTextarea.nativeElement.value).toBe(yogaSession.description)
       expect(dateInput.nativeElement.value).toBe(yogaSession.date.toISOString().slice(0, 10))
 
+      // Act
       nameInput.triggerEventHandler('input', { target: { value: "yoga session name"}})
       dateInput.triggerEventHandler('input', { target: { value: "04/04/2024"}})
       descriptionTextarea.triggerEventHandler('input', { target: { value: "yoga session description"}})

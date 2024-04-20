@@ -189,6 +189,4 @@ describe('LoginComponent', () => {
     })
   })
 
-  // UT : testing submit fn without template
-
 });

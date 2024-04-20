@@ -111,7 +111,7 @@ describe('MeComponent', () => {
   })
 
   // --------
-  // Delete button displayed as a base User / Integration Test
+  // Delete button : displayed for a base User / Integration Test
   // --------
 
   describe('if i click on the delete button', () => {
@@ -131,7 +131,7 @@ describe('MeComponent', () => {
 })
 
 // --------
-// Delete button not displayed as an Admin / Integration Test
+// Delete button : not displayed for an Admin / Integration Test
 // --------
 
 describe('When logged as an admin', () => {
