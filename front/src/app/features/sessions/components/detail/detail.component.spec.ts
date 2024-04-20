@@ -30,10 +30,6 @@ const titleCasePipe = new TitleCasePipe();
 const datePipe = new DatePipe(`en-US`);
 const upperCasePipe = new UpperCasePipe();
 
-// !!! admin false : participate // unparticipate
-// !!! admin true : delete
-// session doesn't exist
-
 describe('DetailComponent', () => {
   let component: DetailComponent;
   let fixture: ComponentFixture<DetailComponent>; 
@@ -280,6 +276,21 @@ describe('DetailComponent', () => {
       // Assert
       expect(mockSessionAPIService.delete).toHaveBeenCalledWith(mockYogaSession.id)
       expect(routerMock.navigate).toHaveBeenCalledWith(['sessions']) 
+    })
+
+    // --------
+    // Participate button / Integration Test
+    // --------
+
+    describe('as an admin', () => {
+      it('should not display any participate/unparticipate button', () => {
+        // Arrange
+        const buttons = fixture.debugElement.queryAll(By.css('button[color="warn"]'))
+        // Assert
+        expect(buttons.find(button => button.query(By.css('span'))?.nativeElement?.textContent === "Delete")).not.toBeUndefined()
+        expect(buttons.find(button => button.query(By.css('span'))?.nativeElement?.textContent === "Participate")).toBeUndefined()
+        expect(buttons.find(button => button.query(By.css('span'))?.nativeElement?.textContent === "Do not participate")).toBeUndefined()
+      })
     })
   })
 });
