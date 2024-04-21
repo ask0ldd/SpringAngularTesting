@@ -1,4 +1,7 @@
 // @ts-nocheck
+
+import { logToA2SessionsPageAsABaseUser, logToABlankSessionsPageAsAnAdmin } from "../support/utils/commands";
+
 describe('User Profile spec', () => {
 
     // ---
@@ -6,32 +9,8 @@ describe('User Profile spec', () => {
     // ---
 
     it('Check User Profile', () => {
-        cy.visit('/login')
 
-        cy.intercept('POST', '/api/auth/login', {
-            statusCode : 200,
-            body: {
-                token: "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ5b2dhQHN0dWRpby5jb20iLCJpYXQiOjE3MTIwMDI4NTEsImV4cCI6MTcxMjA4OTI1MX0.WhlvHw9kw0NPtORRoiZh5_Lm0Ic3r7CvuBJv0w4rvW2ZrRO14OcMiO4MBt-0aQ83-bD0xmuwLT9V0mqvfXRcRw",
-                type: "Bearer",
-                id: 1,
-                username: "yoga@studio.com",
-                firstName: "Admin",
-                lastName: "Admin",
-                admin: true
-            },
-        })
-
-        cy.intercept(
-        {
-            method: 'GET',
-            url: '/api/session',
-        },
-        []).as('session')
-
-        cy.get('input[formControlName=email]').type("yoga@studio.com")
-        cy.get('input[formControlName=password]').type(`${"test!1234"}{enter}{enter}`)
-
-        cy.url().should('include', '/sessions')
+        logToABlankSessionsPageAsAnAdmin()
 
         cy.intercept('GET', '/api/user/*', { fixture: 'user.json' }).as('user')
 
@@ -61,3 +40,31 @@ describe('User Profile spec', () => {
         cy.contains('mat-card-subtitle', 'December 29, 2024').should('exist')
     })
   });
+
+  
+  /*cy.visit('/login')
+
+        cy.intercept('POST', '/api/auth/login', {
+            statusCode : 200,
+            body: {
+                token: "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ5b2dhQHN0dWRpby5jb20iLCJpYXQiOjE3MTIwMDI4NTEsImV4cCI6MTcxMjA4OTI1MX0.WhlvHw9kw0NPtORRoiZh5_Lm0Ic3r7CvuBJv0w4rvW2ZrRO14OcMiO4MBt-0aQ83-bD0xmuwLT9V0mqvfXRcRw",
+                type: "Bearer",
+                id: 1,
+                username: "yoga@studio.com",
+                firstName: "Admin",
+                lastName: "Admin",
+                admin: true
+            },
+        })
+
+        cy.intercept(
+        {
+            method: 'GET',
+            url: '/api/session',
+        },
+        []).as('session')
+
+        cy.get('input[formControlName=email]').type("yoga@studio.com")
+        cy.get('input[formControlName=password]').type(`${"test!1234"}{enter}{enter}`)
+
+        cy.url().should('include', '/sessions')*/
