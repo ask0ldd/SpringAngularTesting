@@ -205,6 +205,12 @@ Install the frontend first.
    ```
    npm run e2e
    ```
+- Choose Chrome as your test browser.
+
+
+- NB : Cypress has some inconsistent behavior so you may have to execute the tests two times if some of them are failing.
+
+
 - To generate the coverage, execute : 
    ```
    npm run e2e:coverage
