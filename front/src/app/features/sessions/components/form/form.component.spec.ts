@@ -23,7 +23,7 @@ import { Teacher } from 'src/app/interfaces/teacher.interface';
 import { TeacherService } from 'src/app/services/teacher.service';
 import { NgZone } from '@angular/core';
 import { SessionInformation } from 'src/app/interfaces/sessionInformation.interface';
-import { mockTeacher1, mockTeacher2, mockSessionInformationAdmin, mockYogaSession1 } from 'src/app/testing/mockDatas';
+import { mockTeacher1, mockTeacher2, mockSessionInformationAdmin, mockYogaSession1, mockYogaSession2 } from 'src/app/testing/mockDatas';
 
 const mockSessionInformation : SessionInformation = {...mockSessionInformationAdmin}
 
@@ -40,7 +40,7 @@ const snackBarMock = {
 const mockSessionAPIService = {
   all : jest.fn(),
   detail : jest.fn(() => of(yogaSession)),
-  update : jest.fn(() => of(yogaSession)),
+  update : jest.fn(() => of({...mockYogaSession2})),
   create : jest.fn(() => of(yogaSession)),
 }
 
