@@ -43,7 +43,7 @@ describe('SessionService', () => {
     it('should update the session informations with the expect values & isLogged$ should be broadcasting true', () => {
       service.logIn(mockSessionInformation)
       expect(service.isLogged).toBeTruthy()
-      expect(JSON.stringify(service.sessionInformation)).toBe(JSON.stringify(service.sessionInformation))
+      expect(JSON.stringify(service.sessionInformation)).toBe(JSON.stringify(mockSessionInformation))
       // [!] evaluations into a subscribe callback are ignored
       // $logged() should broadcast true since islogged = true and next()
       let subValue
