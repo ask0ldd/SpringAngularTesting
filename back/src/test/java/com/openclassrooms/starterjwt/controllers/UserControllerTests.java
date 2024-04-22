@@ -140,7 +140,7 @@ public class UserControllerTests {
     }
 
     @Test
-    @DisplayName("when the id of the user trying to delete doesnt match with the id of the owern of the account, ctrlr.delete(save) should return a 401 Unauthorized response")
+    @DisplayName("when the id of the user trying to delete doesnt match with the id of the owner of the account, ctrlr.delete(save) should return a 401 Unauthorized response")
     public void testDeleteUser_TheLoggedUserIsTryingToDeleteAnotherUserProfile() {
         // Arrange
         // user1 as Principal
