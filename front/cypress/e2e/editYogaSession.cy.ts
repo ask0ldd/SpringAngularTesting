@@ -32,7 +32,7 @@ describe('Edit Yoga Session spec', () => {
 
             // filling the form
             cy.get('input[formControlName=name]').should('exist').clear().type("yoga sansara")
-            cy.get('input[formControlName=date]').should('exist').clear().type("2026-06-10")
+            cy.get('input[formControlName=date]').should('exist').clear().type("2026-02-02")
             cy.get('mat-select[formControlName=teacher_id]').should('exist').click()
             cy.get('#mat-option-1').should('exist').click()
             cy.get('textarea[formControlName=description]').should('exist').clear().type("yoga sansara description")
@@ -42,8 +42,8 @@ describe('Edit Yoga Session spec', () => {
                 statusCode : 200,
                 body: {
                   id: 1,
-                  name: "yoga fire",
-                  date : "2026-06-10 01:07:22",
+                  name: "yoga sansara",
+                  date : "2026-02-02 01:07:22",
                   teacher_id : 1,
                   description : "yoga sansara description",
                   users : [1],
@@ -61,9 +61,14 @@ describe('Edit Yoga Session spec', () => {
             
             // snackbar informing us about the sucessful update
             cy.contains('div', 'Session updated !').should('exist')
+
+            cy.contains('mat-card-title', 'Rentals available').should('exist')
+            cy.contains('mat-card-title', 'yoga sansara').should('exist')
+            cy.contains('p', 'yoga sansara description').should('exist')
+            cy.contains('mat-card-subtitle', 'February 2, 2026').should('exist')
+    
+            cy.get('img[src="assets/sessions.png"]').should('exist')
         })
     })
-    
-    // !!!!! add bad request like create
 
   });
