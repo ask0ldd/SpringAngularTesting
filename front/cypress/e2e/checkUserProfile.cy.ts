@@ -18,7 +18,7 @@ describe('User Profile spec', () => {
 
         cy.wait('@user').then((interception) => {
             cy.contains('p', 'Name: admin ADMIN').should('exist')
-            cy.contains('p', 'Email: john.doe@email.com').should('exist')
+            cy.contains('p', 'Email: yoga@studio.com').should('exist')
             cy.contains('p', 'You are admin').should('exist')
             cy.contains('p', 'December 29, 2023').should('exist')
         })
